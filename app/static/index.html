@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeuroRaaga — Carnatic Ragas Acute EEG Acquisition Platform</title>
+  <meta name="description" content="High-precision data acquisition dashboard for studying the acute effects of Carnatic ragas (Anandabhairavi, Shubhapantuvarali, Mohanam) on 4-channel EEG (A1, A2, C3, C4).">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-logo" title="NeuroRaaga Platform">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+          <path d="M7 12c0-2.76 2.24-5 5-5s5 2.24 5 5-2.24 5-5 5-5-2.24-5-5z"/>
+          <circle cx="12" cy="12" r="2"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>NeuroRaaga <span style="font-size: 0.8rem; font-weight: 500; color: var(--amber-light); border: 1px solid var(--border-accent); padding: 2px 8px; border-radius: 9999px;">CARNATIC EEG STUDY</span></h1>
+        <div class="brand-subtitle">Acute Effects on 4-Channel EEG (A1, A2, C3, C4) &bull; 250 Hz Continuous Acquisition</div>
+      </div>
+    </div>
+
+    <!-- Header Status Pills -->
+    <div class="header-status-group">
+      <div class="status-pill" id="deviceStatusPill">
+        <span class="status-indicator" id="hdrDeviceIndicator"></span>
+        <span id="hdrDeviceStatus" style="font-weight: 700;">CONNECTING...</span>
+        <span class="mono" style="color: var(--text-muted);" id="hdrDeviceSerial">Serial: None</span>
+      </div>
+
+      <div class="status-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="18" height="12" rx="2" ry="2"></rect><line x1="23" y1="13" x2="23" y2="11"></line></svg>
+        <span class="mono" id="hdrBattery">100%</span>
+      </div>
+
+      <div class="status-pill">
+        <span class="mono" style="color: var(--cyan-neural); font-weight: 700;">250 Hz</span>
+      </div>
+
+      <div class="status-pill" style="border-color: var(--border-accent);">
+        <span id="hdrActiveSegment" style="font-weight: 700; color: var(--amber-light);">IDLE</span>
+        <span class="mono" id="hdrSessionTimer" style="margin-left: 6px;">00:00</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+
+    <!-- Guided Workflow Step Navigation -->
+    <nav class="workflow-nav" aria-label="Study Workflow">
+      <div class="step-card active" data-tab="enrollment" id="step-enrollment">
+        <div class="step-number">1</div>
+        <div class="step-info">
+          <span class="step-title">Participant</span>
+          <span class="step-desc">Enrollment & Lifestyle</span>
+        </div>
+      </div>
+
+      <div class="step-card" data-tab="device" id="step-device">
+        <div class="step-number">2</div>
+        <div class="step-info">
+          <span class="step-title">Device & Signal</span>
+          <span class="step-desc">Hardware & Calibration</span>
+        </div>
+      </div>
+
+      <div class="step-card" data-tab="audio" id="step-audio">
+        <div class="step-number">3</div>
+        <div class="step-info">
+          <span class="step-title">Music Library</span>
+          <span class="step-desc">Raga Audio Slots</span>
+        </div>
+      </div>
+
+      <div class="step-card" data-tab="protocol" id="step-protocol">
+        <div class="step-number">4</div>
+        <div class="step-info">
+          <span class="step-title">Protocol</span>
+          <span class="step-desc">12-Min Execution</span>
+        </div>
+      </div>
+
+      <div class="step-card" data-tab="data" id="step-data">
+        <div class="step-number">5</div>
+        <div class="step-info">
+          <span class="step-title">Data Storage</span>
+          <span class="step-desc">Master & Segment CSVs</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Workspace Grid -->
+    <div class="workspace-grid">
+
+      <!-- Left Column: Step Panels -->
+      <aside class="left-workspace">
+        
+        <!-- STEP 1: PARTICIPANT ENROLLMENT -->
+        <div class="glass-panel tab-content active" id="tab-enrollment">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              Participant Enrollment
+            </h2>
+            <span class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Step 1 of 5</span>
+          </div>
+
+          <form id="formEnrollment" class="panel-body">
+            <div class="form-group">
+              <label class="form-label" for="partId">Participant ID (Optional / Auto-Gen)</label>
+              <input type="text" id="partId" class="form-input mono" placeholder="e.g. NR-P001 (leave blank to auto-generate)">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="partName">Volunteer Full Name *</label>
+              <input type="text" id="partName" class="form-input" placeholder="e.g. S. Ramachandran" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="partAge">Age (Strict 18–30 yrs) *</label>
+                <input type="number" id="partAge" class="form-input" min="18" max="30" value="24" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="partSex">Sex *</label>
+                <select id="partSex" class="form-select" required>
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                  <option value="Other">Other / Non-binary</option>
+                  <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Strict Screening Criteria -->
+            <div class="form-group">
+              <label class="form-label" for="headInjury">Previous Head Injury? *</label>
+              <select id="headInjury" class="form-select" required>
+                <option value="No" selected>No (Eligible)</option>
+                <option value="Yes">Yes (Disqualified / Not Eligible)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="brainIssues">History of Brain / Neurological Issues? *</label>
+              <select id="brainIssues" class="form-select" required>
+                <option value="No" selected>No (Eligible)</option>
+                <option value="Yes">Yes (Disqualified / Not Eligible)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="brainMeds">Taking Medications for Brain / Psychiatric? *</label>
+              <select id="brainMeds" class="form-select" required>
+                <option value="No" selected>No (Eligible)</option>
+                <option value="Yes">Yes (Disqualified / Not Eligible)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sleepQuality">Sleep Quality (Previous Night) *</label>
+              <select id="sleepQuality" class="form-select" required>
+                <option value="Excellent (>8 hrs, restful)">Excellent (&gt;8 hrs, deeply restful)</option>
+                <option value="Good (7-8 hrs, normal)" selected>Good (7-8 hrs, normal)</option>
+                <option value="Fair (5-6 hrs, fragmented)">Fair (5-6 hrs, fragmented)</option>
+                <option value="Poor (<5 hrs, sleep deprived)">Poor (&lt;5 hrs, sleep deprived)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="caffeineIntake">Caffeine Intake on Test Day *</label>
+              <select id="caffeineIntake" class="form-select" required>
+                <option value="None" selected>None (Clean Baseline)</option>
+                <option value="Low (1 cup coffee/tea >3h ago)">Low (1 cup coffee/tea &gt;3 hrs ago)</option>
+                <option value="Moderate (1-2 cups within 3h)">Moderate (1-2 cups within 3 hrs)</option>
+                <option value="High (3+ cups or energy drink)">High (3+ cups or energy drink)</option>
+              </select>
+            </div>
+
+            <!-- Eligibility Error / Success Banner -->
+            <div id="eligibilityAlert" class="status-pill" style="display: none; border-radius: var(--radius-sm); font-size: 0.8rem; margin-top: 4px;"></div>
+
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 6px;">
+              Verify Eligibility &amp; Enroll Volunteer &rarr;
+            </button>
+          </form>
+        </div>
+
+        <!-- STEP 2: DEVICE CONNECTION & CALIBRATION -->
+        <div class="glass-panel tab-content" id="tab-device">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+              Device Connection &amp; Calibration
+            </h2>
+            <span class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Step 2 of 5</span>
+          </div>
+
+          <div class="panel-body">
+            <!-- Scan / Connect box -->
+            <div class="device-select-box">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="form-label">Available EEG Devices</span>
+                <button class="btn btn-secondary btn-sm" id="btnScanDevices">Scan Devices</button>
+              </div>
+
+              <div id="deviceListContainer">
+                <div style="color: var(--text-muted); font-size: 0.85rem;">Click "Scan Devices" or connect simulator.</div>
+              </div>
+
+              <div style="display: flex; gap: 8px; margin-top: 4px;">
+                <button class="btn btn-primary btn-block" id="btnConnectDevice">Connect Device</button>
+                <button class="btn btn-danger btn-block" id="btnDisconnectDevice" style="display: none;">Disconnect</button>
+              </div>
+            </div>
+
+            <!-- Connected Hardware Status -->
+            <div class="status-pill" style="border-radius: var(--radius-sm); justify-content: space-between;">
+              <span style="font-size: 0.8rem; color: var(--text-muted);">Active Device Serial:</span>
+              <span class="mono" id="connectedSerialDisplay" style="font-weight: 700; color: var(--cyan-neural);">None</span>
+            </div>
+
+            <!-- 3-Stage Connection Legend -->
+            <div style="display: flex; gap: 10px; font-size: 0.72rem; padding: 4px 0; color: var(--text-muted); flex-wrap: wrap;">
+              <span>🔴 <b>Red</b> = Disconnected (&gt;100kΩ)</span>
+              <span>🟠 <b>Orange</b> = Partial (50–100kΩ)</span>
+              <span>🟢 <b>Green</b> = Connected (&lt;50kΩ)</span>
+            </div>
+
+            <!-- 4-Electrode Impedance & Calibration Check -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="form-label">Electrode Status &amp; Frequencies (4 Leads)</span>
+                <span style="font-size: 0.72rem; color: var(--text-dim);">&lt;50 kΩ Target</span>
+              </div>
+
+              <div class="impedance-grid">
+                <div class="electrode-badge" id="badge-A1">
+                  <span class="electrode-name" style="color: var(--ch-a1);">A1</span>
+                  <span class="electrode-val" id="val-A1">Disconnected</span>
+                  <span class="electrode-status poor" id="stat-A1">🔴 RED</span>
+                  <span class="mono" id="freq-A1" style="font-size: 0.68rem; color: var(--cyan-neural);">0.0 Hz</span>
+                  <span style="font-size: 0.65rem; color: var(--text-dim);">L-Mastoid</span>
+                </div>
+
+                <div class="electrode-badge" id="badge-A2">
+                  <span class="electrode-name" style="color: var(--ch-a2);">A2</span>
+                  <span class="electrode-val" id="val-A2">Disconnected</span>
+                  <span class="electrode-status poor" id="stat-A2">🔴 RED</span>
+                  <span class="mono" id="freq-A2" style="font-size: 0.68rem; color: var(--cyan-neural);">0.0 Hz</span>
+                  <span style="font-size: 0.65rem; color: var(--text-dim);">R-Mastoid</span>
+                </div>
+
+                <div class="electrode-badge" id="badge-C3">
+                  <span class="electrode-name" style="color: var(--ch-c3);">C3</span>
+                  <span class="electrode-val" id="val-C3">Disconnected</span>
+                  <span class="electrode-status poor" id="stat-C3">🔴 RED</span>
+                  <span class="mono" id="freq-C3" style="font-size: 0.68rem; color: var(--cyan-neural);">0.0 Hz</span>
+                  <span style="font-size: 0.65rem; color: var(--text-dim);">L-Central</span>
+                </div>
+
+                <div class="electrode-badge" id="badge-C4">
+                  <span class="electrode-name" style="color: var(--ch-c4);">C4</span>
+                  <span class="electrode-val" id="val-C4">Disconnected</span>
+                  <span class="electrode-status poor" id="stat-C4">🔴 RED</span>
+                  <span class="mono" id="freq-C4" style="font-size: 0.68rem; color: var(--cyan-neural);">0.0 Hz</span>
+                  <span style="font-size: 0.65rem; color: var(--text-dim);">R-Central</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Signal Quality Run Button -->
+            <button class="btn btn-accent btn-block" id="btnCalibrate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              Run Signal Quality &amp; Calibration Check (3.5s)
+            </button>
+
+            <!-- Calibration Status Callout -->
+            <div id="calibStatusBadge" class="status-pill" style="border-radius: var(--radius-sm); border-color: rgba(244, 63, 94, 0.3);">
+              <span class="status-indicator"></span>
+              <span style="font-size: 0.8rem;">Device not connected. Connect headphones to inspect electrodes.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3: MUSIC LIBRARY / UPLOAD -->
+        <div class="glass-panel tab-content" id="tab-audio">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+              Music Library &amp; Raga Slots
+            </h2>
+            <span class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Step 3 of 5</span>
+          </div>
+
+          <div class="panel-body">
+            <div style="font-size: 0.8rem; color: var(--text-muted);">
+              Preloaded Carnatic ragas are mapped below. You can preview, upload, or replace files at any time without touching code.
+            </div>
+
+            <div id="slotsContainer" style="display: flex; flex-direction: column; gap: 12px;">
+              <!-- Dynamically populated slots -->
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4: PROTOCOL TIMELINE & EXECUTION -->
+        <div class="glass-panel tab-content" id="tab-protocol">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Fixed Experimental Protocol
+            </h2>
+            <span class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Step 4 of 5</span>
+          </div>
+
+          <div class="panel-body">
+            <!-- Timing Mode Configuration -->
+            <div class="form-group">
+              <label class="form-label" for="protocolSpeedSelect">Protocol Timing Sequence</label>
+              <select id="protocolSpeedSelect" class="form-select">
+                <option value="120" selected>Standard Study Protocol (2m per segment &bull; 12m total)</option>
+                <option value="15">Fast Testing / Demo Mode (15s per segment &bull; 90s total)</option>
+                <option value="30">Quick Clinical Trial (30s per segment &bull; 3m total)</option>
+              </select>
+            </div>
+
+            <!-- Protocol Clocks -->
+            <div class="form-row">
+              <div class="status-pill" style="border-radius: var(--radius-sm); flex-direction: column; align-items: flex-start; gap: 2px;">
+                <span style="font-size: 0.72rem; color: var(--text-dim);">STAGE REMAINING</span>
+                <span class="mono" id="segmentTimerDisplay" style="font-size: 1.3rem; font-weight: 800; color: var(--cyan-neural);">02:00</span>
+              </div>
+
+              <div class="status-pill" style="border-radius: var(--radius-sm); flex-direction: column; align-items: flex-start; gap: 2px;">
+                <span style="font-size: 0.72rem; color: var(--text-dim);">SESSION REMAINING</span>
+                <span class="mono" id="protocolTimerDisplay" style="font-size: 1.3rem; font-weight: 800; color: var(--amber-light);">12:00</span>
+              </div>
+            </div>
+
+            <!-- Stages Timeline -->
+            <div class="protocol-timeline" id="protocolTimeline">
+              <!-- Populated by JavaScript -->
+            </div>
+
+            <!-- Protocol Controls -->
+            <div style="display: flex; gap: 10px; margin-top: 6px;">
+              <button class="btn btn-primary btn-block" id="btnStartProtocol">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Start Continuous 12-Minute Protocol
+              </button>
+              <button class="btn btn-danger btn-block" id="btnAbortProtocol" style="display: none;">
+                Abort Session
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 5: DATA STORAGE & EXPORTS -->
+        <div class="glass-panel tab-content" id="tab-data">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Data Storage &amp; CSV Slices
+            </h2>
+            <span class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Step 5 of 5</span>
+          </div>
+
+          <div class="panel-body">
+            <!-- Active Session Summary Card -->
+            <div id="sessionSummaryCard" class="device-select-box" style="display: none;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="form-label" style="color: var(--emerald-live);">Generated Session Deliverables</span>
+                <button class="btn btn-secondary btn-sm" id="btnOpenFolder">Open in Windows Explorer</button>
+              </div>
+
+              <div class="export-files-list" id="exportFilesList">
+                <!-- Slices and master file listed here -->
+              </div>
+            </div>
+
+            <!-- Archive of Previous Sessions -->
+            <div>
+              <span class="form-label">Previous Volunteer Recordings</span>
+              <div id="previousSessionsList" style="margin-top: 8px; display: flex; flex-direction: column; gap: 8px;">
+                <!-- Populated via API -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- Right Column: Oscilloscope & Waveform Display -->
+      <section class="right-workspace" style="display: flex; flex-direction: column; gap: 16px;">
+        
+        <div class="glass-panel oscilloscope-card">
+          <div class="oscilloscope-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <h2 class="panel-title" style="font-size: 1rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                Real-Time 4-Channel Waveform Monitor (A1, A2, C3, C4)
+              </h2>
+            </div>
+
+            <!-- Channel Legend -->
+            <div class="channel-legend">
+              <div class="legend-item" style="color: var(--ch-a1);">
+                <span class="legend-dot" style="background: var(--ch-a1);"></span> A1 (L-Mastoid)
+              </div>
+              <div class="legend-item" style="color: var(--ch-a2);">
+                <span class="legend-dot" style="background: var(--ch-a2);"></span> A2 (R-Mastoid)
+              </div>
+              <div class="legend-item" style="color: var(--ch-c3);">
+                <span class="legend-dot" style="background: var(--ch-c3);"></span> C3 (L-Central)
+              </div>
+              <div class="legend-item" style="color: var(--ch-c4);">
+                <span class="legend-dot" style="background: var(--ch-c4);"></span> C4 (R-Central)
+              </div>
+            </div>
+
+            <!-- Oscilloscope Controls -->
+            <div class="oscilloscope-controls">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Scale:</span>
+                <select id="selectGain" class="form-select" style="padding: 4px 8px; font-size: 0.78rem;">
+                  <option value="25">&plusmn;25 µV</option>
+                  <option value="50" selected>&plusmn;50 µV</option>
+                  <option value="100">&plusmn;100 µV</option>
+                  <option value="250">&plusmn;250 µV</option>
+                  <option value="auto">Auto Scale</option>
+                </select>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Window:</span>
+                <select id="selectTimeWindow" class="form-select" style="padding: 4px 8px; font-size: 0.78rem;">
+                  <option value="5">5 sec</option>
+                  <option value="10" selected>10 sec</option>
+                  <option value="15">15 sec</option>
+                </select>
+              </div>
+
+              <button class="btn btn-secondary btn-sm" id="btnPauseScope">Freeze Scope</button>
+            </div>
+          </div>
+
+          <!-- Canvas Oscilloscope -->
+          <div class="canvas-wrapper">
+            <canvas id="eegCanvas"></canvas>
+            <div class="canvas-watermark">
+              <span class="watermark-hz">250 Hz LIVE</span>
+              <span class="watermark-segment" id="watermarkSegment">BASELINE</span>
+            </div>
+          </div>
+
+          <!-- Oscilloscope Footer Bar -->
+          <div class="oscilloscope-footer">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="status-indicator connected pulsing"></span>
+              <span id="protocolInstructionText">Volunteer rests with eyes closed in a quiet posture. Establishing neural baseline.</span>
+            </div>
+            <div class="mono" style="font-size: 0.75rem;">
+              Sampling: 250 Sa/s &bull; Bandwidth: 0.5 - 50 Hz &bull; Notch: 50 Hz
+            </div>
+          </div>
+        </div>
+
+        <!-- Headphone Audio Delivery Monitor Bar -->
+        <div class="audio-player-bar">
+          <div class="audio-track-info">
+            <div class="audio-pulse-icon" id="playerPulseIcon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
+            </div>
+            <div>
+              <div class="audio-track-title" id="playerTrackTitle">Silent / Idle (No Audio)</div>
+              <div class="audio-track-sub" id="playerTrackSub">Headphone Output Inactive</div>
+            </div>
+          </div>
+
+          <div class="audio-progress-container">
+            <span class="mono" style="font-size: 0.75rem; color: var(--text-muted);" id="playerTimeCur">00:00</span>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="playerProgressFill"></div>
+            </div>
+            <span class="mono" style="font-size: 0.75rem; color: var(--text-muted);" id="playerTimeTot">02:00</span>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            <input type="range" id="playerVolume" min="0" max="100" value="85" style="width: 80px; accent-color: var(--amber-light);">
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Post-Condition Subjective Rating Modal -->
+  <div class="modal-overlay" id="ratingModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title" id="ratingModalTitle">Subjective Ratings</h3>
+          <span style="font-size: 0.8rem; color: var(--text-muted);" id="ratingConditionLabel">Condition: BASELINE</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+        <!-- Attention Scale (0 - 10) -->
+        <div class="rating-scale-group">
+          <div class="rating-scale-header">
+            <span class="rating-label">1. Attention Level</span>
+            <span class="rating-number-badge" id="valAttention">5</span>
+          </div>
+          <input type="range" class="rating-slider" id="sliderAttention" min="0" max="10" step="1" value="5">
+          <div class="rating-anchors">
+            <span>0 = Completely Distracted / Wandering</span>
+            <span>5 = Moderate Focus</span>
+            <span>10 = Laser Focused / Absorbed</span>
+          </div>
+        </div>
+
+        <!-- Relaxation Scale (0 - 10) -->
+        <div class="rating-scale-group">
+          <div class="rating-scale-header">
+            <span class="rating-label">2. Relaxation Level</span>
+            <span class="rating-number-badge" id="valRelaxation">5</span>
+          </div>
+          <input type="range" class="rating-slider" id="sliderRelaxation" min="0" max="10" step="1" value="5">
+          <div class="rating-anchors">
+            <span>0 = Highly Tense / Restless</span>
+            <span>5 = Moderately Calm</span>
+            <span>10 = Deeply Relaxed / Tranquil</span>
+          </div>
+        </div>
+
+        <!-- Stress Scale (0 - 10) -->
+        <div class="rating-scale-group">
+          <div class="rating-scale-header">
+            <span class="rating-label">3. Stress Level</span>
+            <span class="rating-number-badge" id="valStress">5</span>
+          </div>
+          <input type="range" class="rating-slider" id="sliderStress" min="0" max="10" step="1" value="5">
+          <div class="rating-anchors">
+            <span>0 = Zero Stress / Peaceful</span>
+            <span>5 = Moderate Stress</span>
+            <span>10 = High Stress / Overwhelmed</span>
+          </div>
+        </div>
+
+        <!-- Optional Notes -->
+        <div class="form-group">
+          <label class="form-label" for="ratingNotes">Participant Comments / Sensations (Optional)</label>
+          <input type="text" id="ratingNotes" class="form-input" placeholder="e.g. Felt meditative stillness, pleasant chills">
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px;">
+        <button class="btn btn-primary" id="btnSubmitRating">
+          Save Rating &amp; Continue Session &rarr;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/eeg_canvas.js"></script>
+  <script src="/js/audio_player.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

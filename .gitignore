@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+.venv/
+
+# Logs
+Logs/
+*.log
+
+# Session output datasets (volunteer recordings)
+# Keep data folder structure, but ignore exported CSV/JSON data if private
+app/data/recordings/*
+!app/data/recordings/.gitkeep
+
+# Operating system artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE config
+.vscode/
+.idea/
+.agents/

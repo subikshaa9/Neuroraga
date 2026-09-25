@@ -1,0 +1,8 @@
+# Core GUI & Signal Processing
+numpy>=1.22.0
+
+# Web Dashboard Backend (Optional if running native GUI only)
+fastapi>=0.100.0
+uvicorn>=0.22.0
+websockets>=11.0
+python-multipart>=0.0.6
