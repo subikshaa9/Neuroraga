@@ -139,15 +139,30 @@ class NeuroRaagaApp:
         self._build_ui()
         self._setup_protocols()
 
+        # Thread-safe UI dispatch queue
+        self.ui_queue = collections.deque()
+        self.root.after(30, self._ui_queue_tick)
+
         # Start Real-Time UI Dispatch Loops
         self.root.after(33, self._canvas_render_loop)   # ~30 FPS oscilloscope
         self.root.after(100, self._eeg_stream_tick)      # EEG acquisition & auto-pause watchdog
         self.root.after(500, self._status_watchdog)
 
+    def _ui_queue_tick(self):
+        while self.ui_queue:
+            try:
+                fn = self.ui_queue.popleft()
+                fn()
+            except Exception as e:
+                print(f"[UI Queue Error]: {e}")
+        self.root.after(30, self._ui_queue_tick)
+
     # ------------------------------------------------------------------
     # Capsule SDK & Native Device Integration
     # ------------------------------------------------------------------
     def _init_capsule_sdk(self):
+        self._poll_stop = threading.Event()
+        self._poll_thread = None
         dll_path = CAPSULE_PATH / "CapsuleClient.dll"
         if dll_path.exists():
             try:
@@ -156,8 +171,24 @@ class NeuroRaagaApp:
                 self.capsule = Capsule(str(dll_path))
                 self.locator = DeviceLocator("Logs", self.capsule.get_lib())
                 print(f"[NeuroRaaga] Native Capsule SDK loaded: {self.capsule.get_version()}")
+                self._start_capsule_poll_thread()
             except Exception as e:
                 print(f"[NeuroRaaga] Capsule SDK load error: {e}")
+
+    def _start_capsule_poll_thread(self):
+        if self.locator and (not self._poll_thread or not self._poll_thread.is_alive()):
+            self._poll_stop.clear()
+            self._poll_thread = threading.Thread(target=self._capsule_poll_loop, daemon=True)
+            self._poll_thread.start()
+
+    def _capsule_poll_loop(self):
+        while not self._poll_stop.is_set():
+            if self.locator:
+                try:
+                    self.locator.update()
+                except Exception:
+                    pass
+            time.sleep(0.02)  # ~50Hz poll rate for Capsule internal event queue
 
     # ------------------------------------------------------------------
     # GUI Layout Construction
@@ -505,7 +536,7 @@ class NeuroRaagaApp:
         dev_frame.pack(fill=tk.X, pady=(0, 12))
 
         btn_row = tk.Frame(dev_frame, bg=C_CARD)
-        btn_row.pack(fill=tk.X, pady=(0, 8))
+        btn_row.pack(fill=tk.X, pady=(0, 6))
 
         self.btn_scan = tk.Button(
             btn_row,
@@ -546,8 +577,19 @@ class NeuroRaagaApp:
         )
         self.btn_disconnect.pack(side=tk.LEFT)
 
+        # Instructions for real hardware setup
+        inst_lbl = tk.Label(
+            dev_frame,
+            text="Step 1: Insert USB Dongle into PC  •  Step 2: Turn ON Headphone  •  Step 3: Click 'Scan Devices'",
+            font=("Segoe UI", 8, "bold"),
+            fg=C_CYAN,
+            bg=C_CARD
+        )
+        inst_lbl.pack(anchor=tk.W, pady=(0, 6))
+
         self.cmb_devices = ttk.Combobox(dev_frame, state="readonly", width=55)
         self.cmb_devices.pack(fill=tk.X)
+        self._populate_initial_devices()
 
         # 3-Stage Connection Legend
         legend_frame = tk.Frame(parent, bg=C_PANEL)
@@ -615,76 +657,180 @@ class NeuroRaagaApp:
         )
         self.signal_check_banner.pack(fill=tk.X, pady=(10, 0))
 
-    def _handle_scan_devices(self):
-        devices = []
-        if self.locator:
-            try:
-                from DeviceType import DeviceType
-                scan_done = threading.Event()
-                def on_dev(l, info, r):
-                    for i in range(len(info)):
-                        devices.append(f"{info[i].get_name()} [Serial: {info[i].get_serial()}]")
-                    scan_done.set()
-                self.locator.set_on_devices_list(on_dev)
-                self.locator.request_devices(DeviceType.Headphones, 2)
-                scan_done.wait(timeout=2.0)
-            except Exception as e:
-                print(f"Scan error: {e}")
+    def _populate_initial_devices(self):
+        initial = [
+            "[Click 'Scan Devices' after inserting USB dongle & powering ON headset]",
+            "NeuroRaaga Synthetic EEG Generator (250 Hz) [Serial: SIM-NEURORAAGA-250]"
+        ]
+        self.cmb_devices["values"] = initial
+        self.cmb_devices.current(0)
 
-        # Always offer Synthetic Simulator option for rapid testing
-        devices.append("NeuroRaaga Synthetic EEG Generator (250 Hz) [Serial: SIM-NEURORAAGA-250]")
-        self.cmb_devices["values"] = devices
-        if devices:
-            self.cmb_devices.current(0)
+    def _handle_scan_devices(self):
+        self._start_capsule_poll_thread()
+        self.btn_scan.config(state=tk.DISABLED, text="Scanning... (8s)")
+        self.signal_check_banner.config(
+            text="Scanning Bluetooth LE via USB Dongle for nearby Capsule EEG Headphones...",
+            fg=C_GOLD,
+            bg="#2B210B"
+        )
+
+        def worker():
+            discovered = []
+            if self.locator:
+                try:
+                    from DeviceType import DeviceType
+                    scan_done = threading.Event()
+                    def on_dev(l, info, r):
+                        for i in range(len(info)):
+                            name_str = info[i].get_name()
+                            serial_str = info[i].get_serial()
+                            entry = f"{name_str} [Serial: {serial_str}]"
+                            if entry not in discovered:
+                                discovered.append(entry)
+                        scan_done.set()
+
+                    self.locator.set_on_devices_list(on_dev)
+                    # Request Headphones first
+                    self.locator.request_devices(DeviceType.Headphones, 6)
+                    scan_done.wait(timeout=6.5)
+
+                    if not discovered:
+                        scan_done.clear()
+                        # Request Any device type
+                        self.locator.request_devices(DeviceType.Any, 2)
+                        scan_done.wait(timeout=2.5)
+                except Exception as e:
+                    print(f"Scan error: {e}")
+
+            all_devices = []
+            if discovered:
+                all_devices.extend(discovered)
+            else:
+                all_devices.append("[No physical EEG devices found - Plug in dongle & Turn on headset]")
+
+            # Always offer Synthetic Simulator as explicit offline testing option
+            sim_entry = "NeuroRaaga Synthetic EEG Generator (250 Hz) [Serial: SIM-NEURORAAGA-250]"
+            all_devices.append(sim_entry)
+
+            def update_ui():
+                self.cmb_devices["values"] = all_devices
+                self.cmb_devices.current(0)
+                self.btn_scan.config(state=tk.NORMAL, text="Scan Devices")
+                if discovered:
+                    self.signal_check_banner.config(
+                        text=f"Scan complete! Found {len(discovered)} EEG hardware device(s). Select device & click 'Connect Device'.",
+                        fg=C_EMERALD,
+                        bg="#064E3B"
+                    )
+                else:
+                    self.signal_check_banner.config(
+                        text="No physical EEG devices detected. Ensure USB dongle is connected, headset is powered ON, and scan again.",
+                        fg=C_ROSE,
+                        bg="#450A0A"
+                    )
+
+            self.ui_queue.append(update_ui)
+
+        threading.Thread(target=worker, daemon=True).start()
 
     def _handle_connect_device(self):
-        sel = self.cmb_devices.get()
-        if not sel:
-            messagebox.showwarning("Select Device", "Please click 'Scan Devices' and select a device from the list.")
+        sel = self.cmb_devices.get().strip()
+        if not sel or "Click 'Scan Devices'" in sel or "No physical EEG devices found" in sel:
+            messagebox.showwarning(
+                "Device Not Selected",
+                "Please insert your USB BLE dongle, turn ON your Capsule EEG Headphone, and click 'Scan Devices' first."
+            )
             return
 
         is_sim = "SIM-NEURORAAGA-250" in sel
         serial = "SIM-NEURORAAGA-250" if is_sim else sel.split("[Serial: ")[-1].replace("]", "").strip()
 
         if is_sim:
-            self.is_connected = True
-            self.use_simulation = True
-            self.device_serial = serial
-            self.device_name = "NeuroRaaga Synthetic Simulator (250 Hz)"
-            self.lbl_hdr_conn.config(text="● CONNECTED (250 Hz LIVE)", fg=C_EMERALD)
-            self.lbl_hdr_serial.config(text=f"Serial: {self.device_serial}")
-            self.signal_check_banner.config(
-                text="Device Connected! Placing electrodes on participant... All 4 must turn GREEN.",
-                fg=C_GOLD,
-                bg="#2B210B"
-            )
-            # Simulated electrodes initially turn GREEN with low impedance
-            for ch in TARGET_CHANNELS:
-                self.electrode_states[ch] = "GREEN"
-                self.electrode_impedances[ch] = round(14.0 + (hash(ch) % 5), 1)
-            self._update_electrode_card_ui()
-            messagebox.showinfo("Connected", f"Connected to {self.device_name}!\nLive real-time waveforms are now streaming on the oscilloscope.")
+            self._connect_simulation(serial)
             return
 
-        # Native Hardware Connection
-        try:
-            from Device import Device
-            self.native_device = Device(self.locator, serial, self.capsule.get_lib())
-            self.native_device.set_on_connection_status_changed(self._on_native_connection_status)
-            self.native_device.set_on_eeg(self._on_native_eeg)
-            self.native_device.set_on_resistances(self._on_native_resistances)
-            self.native_device.connect(bipolarChannels=True)
-            self.native_device.start()
+        # Native Physical Hardware Connection
+        self.btn_connect.config(state=tk.DISABLED, text="Connecting...")
+        self.signal_check_banner.config(
+            text=f"Connecting to physical EEG Headphone ({serial})... Establishing Bluetooth link...",
+            fg=C_CYAN,
+            bg="#162032"
+        )
 
-            self.is_connected = True
-            self.use_simulation = False
-            self.device_serial = serial
-            self.device_name = "Capsule EEG Headphone Pro"
-            self.lbl_hdr_conn.config(text="● CONNECTED (NATIVE HARDWARE)", fg=C_EMERALD)
-            self.lbl_hdr_serial.config(text=f"Serial: {self.device_serial}")
-            messagebox.showinfo("Connected", f"Connected to EEG Headphone Pro (Serial: {serial})!")
-        except Exception as e:
-            messagebox.showerror("Connection Error", f"Could not connect to native hardware: {e}")
+        def connect_worker():
+            connected_ok = False
+            error_msg = ""
+            try:
+                from Device import Device
+                self._start_capsule_poll_thread()
+
+                self.native_device = Device(self.locator, serial, self.capsule.get_lib())
+                self.native_device.set_on_connection_status_changed(self._on_native_connection_status)
+                self.native_device.set_on_eeg(self._on_native_eeg)
+                self.native_device.set_on_resistances(self._on_native_resistances)
+                self.native_device.connect(bipolarChannels=True)
+                self.native_device.start()
+
+                connected_ok = True
+            except Exception as e:
+                error_msg = str(e)
+
+            def finalize_connect():
+                self.btn_connect.config(state=tk.NORMAL, text="Connect Device")
+                if connected_ok:
+                    self.is_connected = True
+                    self.use_simulation = False
+                    self.device_serial = serial
+                    self.device_name = f"Capsule EEG Headphone Pro ({serial})"
+                    self.lbl_hdr_conn.config(text="● CONNECTED (NATIVE HARDWARE)", fg=C_EMERALD)
+                    self.lbl_hdr_serial.config(text=f"Serial: {self.device_serial}")
+                    self.signal_check_banner.config(
+                        text=f"Native Headphone Connected ({serial})! Adjust ear cups so all 4 leads turn GREEN.",
+                        fg=C_EMERALD,
+                        bg="#064E3B"
+                    )
+                    messagebox.showinfo("Connected", f"Connected to native EEG Headphone Pro!\nSerial/Code: {serial}\n\nLive real-time physical EEG stream is active.")
+                else:
+                    self.native_device = None
+                    self.is_connected = False
+                    self.lbl_hdr_conn.config(text="● DISCONNECTED", fg=C_ROSE)
+                    self.lbl_hdr_serial.config(text="Serial: None")
+                    self.signal_check_banner.config(
+                        text=f"Connection failed for {serial}. Ensure dongle is plugged in & headset is powered ON.",
+                        fg=C_ROSE,
+                        bg="#450A0A"
+                    )
+                    messagebox.showerror(
+                        "Hardware Connection Failed",
+                        f"Could not establish physical connection to EEG device ({serial}):\n\n{error_msg}\n\n"
+                        f"Troubleshooting checklist:\n"
+                        f"1. Ensure the USB BLE dongle is plugged into your PC.\n"
+                        f"2. Ensure the headphone power switch is ON and battery is charged.\n"
+                        f"3. Ensure the headphone is within range of the PC.\n"
+                        f"4. Click 'Scan Devices' to refresh discovery."
+                    )
+
+            self.ui_queue.append(finalize_connect)
+
+        threading.Thread(target=connect_worker, daemon=True).start()
+
+    def _connect_simulation(self, serial: str):
+        self.is_connected = True
+        self.use_simulation = True
+        self.device_serial = serial
+        self.device_name = f"NeuroRaaga EEG Headphone ({serial})" if not serial.startswith("SIM-") else "NeuroRaaga Precision EEG Simulator (250 Hz)"
+        self.lbl_hdr_conn.config(text=f"● CONNECTED ({serial})", fg=C_EMERALD)
+        self.lbl_hdr_serial.config(text=f"Serial: {self.device_serial}")
+        self.signal_check_banner.config(
+            text="Device Connected! Placing electrodes on participant... All 4 must turn GREEN.",
+            fg=C_GOLD,
+            bg="#2B210B"
+        )
+        for ch in TARGET_CHANNELS:
+            self.electrode_states[ch] = "GREEN"
+            self.electrode_impedances[ch] = round(14.0 + (hash(ch) % 5), 1)
+        self._update_electrode_card_ui()
+        messagebox.showinfo("Connected", f"Connected to {self.device_name}!\nLive real-time waveforms are now streaming on the oscilloscope.")
 
     def _on_native_connection_status(self, device, status):
         status_val = int(status)
@@ -1525,6 +1671,8 @@ class NeuroRaagaApp:
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
 
     def _on_close(self):
+        if hasattr(self, "_poll_stop") and self._poll_stop:
+            self._poll_stop.set()
         if self.audio_player:
             self.audio_player.stop()
         if self.native_device:

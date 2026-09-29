@@ -70,16 +70,21 @@ class Device:
     _name_in_pointers_map = "Device"
     def __init__(self, locator, device_id, lib):
         self._lib = lib
+        self._pointer = None
         self._lib.clCDeviceLocator_CreateDevice.restype = ctypes.POINTER(ctypes.c_int)
         self._lib.clCDeviceLocator_CreateDevice.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_char_p, ctypes.POINTER(Error)]
         error = Error()
-        self._pointer = self._lib.clCDeviceLocator_CreateDevice(locator.get_c_pointer(), device_id.encode('utf-8'), ctypes.byref(error))
+        ptr = self._lib.clCDeviceLocator_CreateDevice(locator.get_c_pointer(), device_id.encode('utf-8'), ctypes.byref(error))
         if error.code is not Error_Code.OK:
             raise CapsuleException(error)
-
+        self._pointer = ptr
 
     def __del__(self):
-        self._lib.clCDevice_Release(self._pointer)
+        if getattr(self, "_pointer", None) is not None and getattr(self, "_lib", None) is not None:
+            try:
+                self._lib.clCDevice_Release(self._pointer)
+            except Exception:
+                pass
 
     def set_on_connection_status_changed(self, callback: Callable[['Device', Device_Connection_Status], None]):
         global _device_lib_impl, _device_connection_callback

@@ -133,7 +133,7 @@ class EEGEngine:
             except Exception as e:
                 print(f"[EEGEngine] Native scan error: {e}")
 
-        # Always offer Synthetic Neural Generator (250 Hz) as an option
+        # Always offer Synthetic Neural Generator (250 Hz) as an explicit testing option
         found.append({
             "serial": "SIM-NEURORAAGA-250",
             "name": "NeuroRaaga Synthetic EEG Generator (250 Hz)",
@@ -190,8 +190,10 @@ class EEGEngine:
                 print(f"[EEGEngine] Connected to native device: {serial} ({self.device_name})")
                 return True
             except Exception as e:
-                print(f"[EEGEngine] Failed native connection: {e}. Falling back to simulation.")
-                return self.connect_device("SIM-NEURORAAGA-250", simulated=True)
+                print(f"[EEGEngine] Failed native connection: {e}.")
+                self.is_connected = False
+                self.use_simulation = False
+                return False
 
     def _on_native_connection_status(self, device, status):
         status_val = int(status)

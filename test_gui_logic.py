@@ -120,5 +120,27 @@ class TestNeuroRaagaGUI(unittest.TestCase):
         # Clean up
         self.app._abort_protocol()
 
+    def test_device_scan_and_connection_logic(self):
+        print("\n--- Testing Device Scan & Connection Logic ---")
+        
+        # Verify initial device list does not contain hardcoded fake devices
+        vals = list(self.app.cmb_devices["values"])
+        self.assertTrue(any("Scan Devices" in v for v in vals), "Initial state should prompt user to click Scan Devices")
+        print("PASS: Prompt to scan displayed initially.")
+
+        # Test selecting synthetic simulator option
+        sim_val = [v for v in vals if "SIM-NEURORAAGA-250" in v][0]
+        self.app.cmb_devices.set(sim_val)
+        self.app._handle_connect_device()
+        self.assertTrue(self.app.is_connected)
+        self.assertEqual(self.app.device_serial, "SIM-NEURORAAGA-250")
+        print("PASS: Connected to explicit Synthetic Simulator for offline mode.")
+
+        # Test disconnect
+        self.app._handle_disconnect()
+        self.assertFalse(self.app.is_connected)
+        print("PASS: Disconnected successfully.")
+
 if __name__ == "__main__":
     unittest.main()
+
