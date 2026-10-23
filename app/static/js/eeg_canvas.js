@@ -1,18 +1,18 @@
 /**
  * NeuroRaaga Real-Time Multi-Channel EEG Oscilloscope
- * High-performance HTML5 Canvas rendering for A1, A2, C3, C4 electrodes at 250 Hz.
+ * High-performance HTML5 Canvas rendering for O1, O2, T3, T4 electrodes at 250 Hz.
  */
 class EEGOscilloscope {
   constructor(canvasElement) {
     this.canvas = canvasElement;
     this.ctx = canvasElement.getContext('2d', { alpha: false });
     
-    this.channels = ['A1', 'A2', 'C3', 'C4'];
+    this.channels = ['O1', 'O2', 'T3', 'T4'];
     this.channelColors = {
-      'A1': '#38bdf8', // Cyan-Blue
-      'A2': '#818cf8', // Indigo Periwinkle
-      'C3': '#fbbf24', // Carnatic Amber
-      'C4': '#34d399'  // Mint Emerald
+      'O1': '#38bdf8', // Cyan-Blue
+      'O2': '#818cf8', // Indigo Periwinkle
+      'T3': '#fbbf24', // Carnatic Amber
+      'T4': '#34d399'  // Mint Emerald
     };
     
     this.sampleRate = 250; // 250 Hz
@@ -21,22 +21,22 @@ class EEGOscilloscope {
     
     // Ring buffers for each channel
     this.dataBuffers = {
-      'A1': new Float32Array(this.maxPoints),
-      'A2': new Float32Array(this.maxPoints),
-      'C3': new Float32Array(this.maxPoints),
-      'C4': new Float32Array(this.maxPoints)
+      'O1': new Float32Array(this.maxPoints),
+      'O2': new Float32Array(this.maxPoints),
+      'T3': new Float32Array(this.maxPoints),
+      'T4': new Float32Array(this.maxPoints)
     };
     this.bufferIndex = 0;
     this.totalSamplesReceived = 0;
     
     // Scale & Gain (in uV)
-    this.uVRange = 50.0; // +/- 50 uV default
+    this.uVRange = 50.0; // Matches the selected default scale in the UI
     this.autoScale = false;
     this.isPaused = false;
-    this.channelVisible = { 'A1': true, 'A2': true, 'C3': true, 'C4': true };
+    this.channelVisible = { 'O1': true, 'O2': true, 'T3': true, 'T4': true };
     
     // Current live microvolt readings
-    this.latestValues = { 'A1': 0.0, 'A2': 0.0, 'C3': 0.0, 'C4': 0.0 };
+    this.latestValues = { 'O1': 0.0, 'O2': 0.0, 'T3': 0.0, 'T4': 0.0 };
     
     this.setupResizeObserver();
     this.startRenderLoop();
@@ -48,7 +48,7 @@ class EEGOscilloscope {
       const dpr = window.devicePixelRatio || 1;
       this.canvas.width = rect.width * dpr;
       this.canvas.height = rect.height * dpr;
-      this.ctx.scale(dpr, dpr);
+      this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       this.width = rect.width;
       this.height = rect.height;
     };
@@ -81,6 +81,16 @@ class EEGOscilloscope {
     }
   }
 
+  zoomIn() {
+    this.autoScale = false;
+    this.uVRange = Math.max(5, this.uVRange / 1.5);
+  }
+
+  zoomOut() {
+    this.autoScale = false;
+    this.uVRange = Math.min(2000, this.uVRange * 1.5);
+  }
+
   togglePause() {
     this.isPaused = !this.isPaused;
     return this.isPaused;
@@ -97,14 +107,25 @@ class EEGOscilloscope {
     
     for (let i = 0; i < samples.length; i++) {
       const s = samples[i];
+      const display = s.display || s;
       for (const ch of this.channels) {
-        const val = s[ch] !== undefined ? s[ch] : 0.0;
+        const val = Number(display[ch]);
+        if (!Number.isFinite(val)) continue;
         this.dataBuffers[ch][this.bufferIndex] = val;
         this.latestValues[ch] = val;
       }
       this.bufferIndex = (this.bufferIndex + 1) % this.maxPoints;
       this.totalSamplesReceived++;
     }
+  }
+
+  clear() {
+    for (const ch of this.channels) {
+      this.dataBuffers[ch].fill(0);
+      this.latestValues[ch] = 0;
+    }
+    this.bufferIndex = 0;
+    this.totalSamplesReceived = 0;
   }
 
   loadInitialBuffer(channelData) {
@@ -187,7 +208,7 @@ class EEGOscilloscope {
           if (abs > maxAbs) maxAbs = abs;
         }
       }
-      range = Math.min(Math.max(maxAbs * 1.25, 20.0), 300.0);
+      range = Math.min(Math.max(maxAbs * 1.25, 10.0), 2000.0);
     }
 
     // 3. Draw Channel Traces
@@ -204,6 +225,10 @@ class EEGOscilloscope {
       const yScaling = (channelHeight * 0.42) / range;
 
       // Draw Trace Line
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, chIdx * channelHeight, w, channelHeight);
+      ctx.clip();
       ctx.strokeStyle = color;
       ctx.lineWidth = 1.75;
       ctx.lineJoin = 'round';
@@ -225,6 +250,7 @@ class EEGOscilloscope {
         }
       }
       ctx.stroke();
+      ctx.restore();
 
       // 4. Draw Channel Header & Live Value Overlay
       ctx.fillStyle = color;

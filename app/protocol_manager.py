@@ -1,7 +1,7 @@
 """
 NeuroRaaga Protocol Manager
 Enforces the fixed, identical 6-stage experimental sequence:
-Baseline (2m) -> Raga 1 (2m) -> Rest 1 (2m) -> Raga 2 (2m) -> Rest 2 (2m) -> Raga 3 (2m)
+Baseline (30s) -> Raga 1 (4m) -> Rest 1 (30s) -> Raga 2 (4m) -> Rest 2 (30s) -> Raga 3 (4m)
 Continuous EEG recording runs uninterrupted across all segments and gaps.
 """
 from __future__ import annotations
@@ -18,7 +18,7 @@ PROTOCOL_STAGES = [
         "segment_id": "baseline",
         "name": "Baseline (Eyes Closed / Rest)",
         "condition": "baseline",
-        "default_duration_sec": 120,
+        "default_duration_sec": 30,
         "is_audio": False,
         "audio_slot": None,
         "instructions": "Volunteer rests with eyes closed in a quiet posture. Establishing neural baseline."
@@ -27,7 +27,7 @@ PROTOCOL_STAGES = [
         "segment_id": "raga1",
         "name": "Raga 1 (Anandabhairavi)",
         "condition": "raga1",
-        "default_duration_sec": 120,
+        "default_duration_sec": 240,
         "is_audio": True,
         "audio_slot": "raga1",
         "instructions": "Playing Raga 1 (Anandabhairavi) through headphones. Volunteer listens with closed or soft eyes."
@@ -36,7 +36,7 @@ PROTOCOL_STAGES = [
         "segment_id": "rest1",
         "name": "Silence / Post-Raga 1 Rest",
         "condition": "rest1",
-        "default_duration_sec": 120,
+        "default_duration_sec": 30,
         "is_audio": False,
         "audio_slot": None,
         "instructions": "Silent recovery period following Raga 1. Collect subjective ratings for Raga 1."
@@ -45,7 +45,7 @@ PROTOCOL_STAGES = [
         "segment_id": "raga2",
         "name": "Raga 2 (Shubhapantuvarali)",
         "condition": "raga2",
-        "default_duration_sec": 120,
+        "default_duration_sec": 240,
         "is_audio": True,
         "audio_slot": "raga2",
         "instructions": "Playing Raga 2 (Shubhapantuvarali) through headphones. Volunteer listens attentively."
@@ -54,7 +54,7 @@ PROTOCOL_STAGES = [
         "segment_id": "rest2",
         "name": "Silence / Post-Raga 2 Rest",
         "condition": "rest2",
-        "default_duration_sec": 120,
+        "default_duration_sec": 30,
         "is_audio": False,
         "audio_slot": None,
         "instructions": "Silent recovery period following Raga 2. Collect subjective ratings for Raga 2."
@@ -63,7 +63,7 @@ PROTOCOL_STAGES = [
         "segment_id": "raga3",
         "name": "Raga 3 (Mohanam)",
         "condition": "raga3",
-        "default_duration_sec": 120,
+        "default_duration_sec": 240,
         "is_audio": True,
         "audio_slot": "raga3",
         "instructions": "Playing Raga 3 (Mohanam) through headphones. Uplifting melodic sequence."
@@ -79,7 +79,7 @@ class ProtocolManager:
         self.is_completed = False
         
         # Timing configuration
-        self.duration_per_segment_sec = 120.0  # Strict 2 minutes
+        self.duration_per_segment_sec = 120.0  # Base duration for baseline and rest stages.
         self.stage_start_time: Optional[float] = None
         self.stage_elapsed_sec: float = 0.0
         self.total_elapsed_sec: float = 0.0
@@ -97,7 +97,7 @@ class ProtocolManager:
         self._stop_event = threading.Event()
 
     def set_duration_mode(self, duration_sec: float):
-        """Allows toggling between standard 120s and fast test mode (e.g. 15s)."""
+        """Sets the base duration; raga stages last twice as long."""
         with self.lock:
             if not self.is_running:
                 self.duration_per_segment_sec = float(duration_sec)
@@ -171,7 +171,7 @@ class ProtocolManager:
                 "participant_name": participant_info.get("name"),
                 "total_stages": len(PROTOCOL_STAGES),
                 "duration_per_segment": self.duration_per_segment_sec,
-                "total_duration": self.duration_per_segment_sec * len(PROTOCOL_STAGES)
+                "total_duration": self._total_duration()
             })
             return True
 
@@ -188,6 +188,7 @@ class ProtocolManager:
             
             # Setup audio info if audio stage
             audio_info = None
+            stage_duration_sec = self._stage_duration(stage)
             if stage["is_audio"] and stage["audio_slot"]:
                 audio_info = audio_manager.get_slot_info(stage["audio_slot"])
                 
@@ -201,7 +202,7 @@ class ProtocolManager:
                 "segment_id": stage["segment_id"],
                 "segment_name": stage["name"],
                 "condition": stage["condition"],
-                "duration_sec": self.duration_per_segment_sec,
+                "duration_sec": stage_duration_sec,
                 "is_audio": stage["is_audio"],
                 "audio_info": audio_info,
                 "instructions": stage["instructions"],
@@ -209,7 +210,7 @@ class ProtocolManager:
             })
             
             # Progress loop for current stage
-            while self.stage_elapsed_sec < self.duration_per_segment_sec and not self._stop_event.is_set():
+            while self.stage_elapsed_sec < stage_duration_sec and not self._stop_event.is_set():
                 time.sleep(0.5)
                 if not self.is_paused:
                     self.stage_elapsed_sec = time.time() - self.stage_start_time
@@ -218,11 +219,11 @@ class ProtocolManager:
                     self._broadcast_event("protocol_tick", {
                         "stage_index": self.stage_index,
                         "segment_id": stage["segment_id"],
-                        "stage_elapsed": min(self.stage_elapsed_sec, self.duration_per_segment_sec),
-                        "stage_remaining": max(0.0, self.duration_per_segment_sec - self.stage_elapsed_sec),
-                        "stage_duration": self.duration_per_segment_sec,
+                        "stage_elapsed": min(self.stage_elapsed_sec, stage_duration_sec),
+                        "stage_remaining": max(0.0, stage_duration_sec - self.stage_elapsed_sec),
+                        "stage_duration": stage_duration_sec,
                         "total_elapsed": self.total_elapsed_sec,
-                        "total_duration": self.duration_per_segment_sec * len(PROTOCOL_STAGES)
+                        "total_duration": self._total_duration()
                     })
                     
             if self._stop_event.is_set():
@@ -249,6 +250,15 @@ class ProtocolManager:
         elif self.stage_index == 4: # rest2 -> rate raga2
             return "raga2"
         return None
+
+    def _stage_duration(self, stage: Dict[str, Any]) -> float:
+        # 120 seconds selects the standard schedule: 30-second rests and 4-minute ragas.
+        if self.duration_per_segment_sec == 120.0:
+            return float(stage['default_duration_sec'])
+        return self.duration_per_segment_sec * (2 if stage['is_audio'] else 1)
+
+    def _total_duration(self) -> float:
+        return sum(self._stage_duration(stage) for stage in PROTOCOL_STAGES)
 
     def _finish_protocol(self):
         with self.lock:
@@ -337,7 +347,7 @@ class ProtocolManager:
                 "stage_elapsed_sec": round(self.stage_elapsed_sec, 1),
                 "duration_per_segment_sec": self.duration_per_segment_sec,
                 "total_elapsed_sec": round(self.total_elapsed_sec, 1),
-                "total_expected_duration_sec": self.duration_per_segment_sec * len(PROTOCOL_STAGES),
+                "total_expected_duration_sec": self._total_duration(),
                 "participant": self.participant_info,
                 "data_logger": self.data_logger.get_summary() if self.data_logger else None,
                 "stages": PROTOCOL_STAGES

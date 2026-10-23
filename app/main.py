@@ -23,8 +23,10 @@ from app.eeg_engine import eeg_engine, TARGET_CHANNELS
 from app.audio_manager import audio_manager, AUDIO_DIR, UPLOAD_DIR
 from app.protocol_manager import protocol_manager, PROTOCOL_STAGES
 from app.data_exporter import RECORDINGS_DIR
+from app import signal_processing
 
 app = FastAPI(title="NeuroRaaga EEG Data Acquisition Dashboard", version="1.0.0")
+APP_BUILD_ID = "o1-o2-t3-t4-impedance-20261019-1"
 
 # CORS middleware for development
 app.add_middleware(
@@ -34,6 +36,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def prevent_stale_frontend(request: Any, call_next):
+    response = await call_next(request)
+    path = request.url.path.lower()
+    if path == "/" or path.endswith((".html", ".js", ".css")):
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 
@@ -67,7 +79,9 @@ async def _send_ws_message(msg: Dict[str, Any]):
 def on_eeg_samples(batch):
     broadcast_to_websockets({
         "type": "eeg_data",
-        "samples": batch
+        "samples": batch,
+        "resistances": eeg_engine.resistances,
+                "resistance_readings": eeg_engine.get_resistance_readings()
     })
 
 def on_protocol_event(event):
@@ -80,7 +94,10 @@ protocol_manager.register_event_listener(on_protocol_event)
 async def startup_event():
     global async_event_loop
     async_event_loop = asyncio.get_running_loop()
-    print("[NeuroRaaga] Backend initialized. Event loop captured.")
+    print(
+        f"[NeuroRaaga] Backend initialized. Event loop captured. "
+        f"Build={APP_BUILD_ID}; app={Path(__file__).resolve()}; static={STATIC_DIR.resolve()}"
+    )
 
 # ----------------- WebSocket -----------------
 @app.websocket("/ws")
@@ -100,6 +117,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 "battery": eeg_engine.battery_percent,
                 "streaming": eeg_engine.is_streaming,
                 "resistances": eeg_engine.resistances,
+                "resistance_readings": eeg_engine.get_resistance_readings(),
                 "calibration": cal
             },
             "protocol": protocol_manager.get_status(),
@@ -133,6 +151,7 @@ def get_system_status():
             "battery": eeg_engine.battery_percent,
             "streaming": eeg_engine.is_streaming,
             "resistances": eeg_engine.resistances,
+                "resistance_readings": eeg_engine.get_resistance_readings(),
             "calibration": eeg_engine.calibration_results,
             "native_dll_loaded": eeg_engine.native_dll_loaded
         },
@@ -143,8 +162,8 @@ def get_system_status():
 # --- Device Endpoints ---
 @app.get("/api/device/scan")
 def scan_devices():
-    devices = eeg_engine.scan_devices(timeout_sec=2.5)
-    return {"devices": devices}
+    devices = eeg_engine.scan_devices(timeout_sec=8.0)
+    return {"devices": devices, "scan_error": eeg_engine.last_scan_error}
 
 class ConnectDeviceRequest(BaseModel):
     serial: str
@@ -154,20 +173,27 @@ class ConnectDeviceRequest(BaseModel):
 def connect_device(req: ConnectDeviceRequest):
     ok = eeg_engine.connect_device(req.serial, req.simulated)
     if not ok:
-        raise HTTPException(status_code=400, detail="Failed to connect to device.")
+        detail = eeg_engine.last_connection_error or "Failed to connect to device."
+        raise HTTPException(status_code=400, detail=detail)
     # Also auto-start streaming to allow live waveform monitor right away
-    eeg_engine.start_streaming()
+    if not eeg_engine.start_streaming():
+        eeg_engine.disconnect()
+        raise HTTPException(status_code=500, detail="Device connected, but EEG streaming could not start.")
     broadcast_to_websockets({
         "type": "device_connected",
         "serial": eeg_engine.device_serial,
         "name": eeg_engine.device_name,
-        "resistances": eeg_engine.resistances
+        "resistances": eeg_engine.resistances,
+                "resistance_readings": eeg_engine.get_resistance_readings(),
+        "streaming": eeg_engine.is_streaming
     })
     return {
         "connected": True,
         "serial": eeg_engine.device_serial,
         "name": eeg_engine.device_name,
-        "resistances": eeg_engine.resistances
+        "resistances": eeg_engine.resistances,
+                "resistance_readings": eeg_engine.get_resistance_readings(),
+        "streaming": eeg_engine.is_streaming
     }
 
 @app.post("/api/device/disconnect")
@@ -180,7 +206,11 @@ def disconnect_device():
 def run_calibration():
     if not eeg_engine.is_connected:
         raise HTTPException(status_code=400, detail="Device not connected.")
-    res = eeg_engine.run_calibration(duration_sec=3.5)
+    try:
+        res = eeg_engine.run_calibration(duration_sec=3.5)
+    except Exception as exc:
+        print(f"[API] Calibration failed: {exc}")
+        raise HTTPException(status_code=500, detail=f"Calibration failed: {exc}") from exc
     broadcast_to_websockets({
         "type": "calibration_finished",
         "result": res
@@ -286,10 +316,18 @@ class StartProtocolRequest(BaseModel):
 
 @app.post("/api/protocol/start")
 def start_protocol(req: StartProtocolRequest):
-    if not eeg_engine.is_connected:
-        # Auto connect simulator if not connected
-        eeg_engine.connect_device("SIM-NEURORAAGA-250", simulated=True)
-        
+    if not eeg_engine.is_connected or not eeg_engine.is_streaming or eeg_engine.use_simulation:
+        raise HTTPException(status_code=400, detail="Connect and stream from the physical Headband Pro before the protocol.")
+    calibration = eeg_engine.calibration_results or {}
+    if not calibration.get("ready_for_protocol", False):
+        detail = calibration.get("message") or "Run calibration and resolve electrode contact and signal quality issues before recording."
+        raise HTTPException(status_code=400, detail=f"Calibration did not pass: {detail}")
+    if any(
+        eeg_engine.resistances.get(channel) is None or eeg_engine.resistances[channel] >= 500.0
+        for channel in ("O1", "O2", "T3", "T4")
+    ):
+        raise HTTPException(status_code=400, detail="Live electrode impedance is missing or at least 500 kOhm. Refit the headband and recalibrate before recording.")
+
     ok = protocol_manager.start_protocol(req.participant)
     if not ok:
         raise HTTPException(status_code=400, detail="Protocol already running or failed to initialize.")
@@ -321,6 +359,72 @@ def submit_rating(req: SubjectiveRatingRequest):
     if not ok:
         raise HTTPException(status_code=400, detail="Active recording session not found to record ratings.")
     return {"status": "rating_recorded"}
+
+class SignalProcessingRequest(BaseModel):
+    session_folder: str
+
+
+@app.get("/api/data/processing/inspect/{session_folder}")
+def inspect_recording_for_processing(session_folder: str):
+    try:
+        return signal_processing.inspect_session(session_folder)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.post("/api/data/processing/run")
+def process_selected_recording(req: SignalProcessingRequest):
+    try:
+        return signal_processing.process_session(req.session_folder)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except OSError as exc:
+        raise HTTPException(status_code=500, detail=f"Could not save processing outputs: {exc}") from exc
+
+
+@app.get("/api/data/processing/download/{session_folder}/{processing_folder}/{filename}")
+def download_processing_output(session_folder: str, processing_folder: str, filename: str):
+    if (not session_folder.replace("-", "").replace("_", "").isalnum()
+            or not processing_folder.startswith("signal_processing_")
+            or Path(processing_folder).name != processing_folder
+            or Path(filename).name != filename):
+        raise HTTPException(status_code=400, detail="Invalid processing output path.")
+    try:
+        session = signal_processing._safe_session(session_folder)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail="Recording not found.") from exc
+    output_dir = (session / processing_folder).resolve()
+    if output_dir.parent != session.resolve() or not output_dir.is_dir():
+        raise HTTPException(status_code=404, detail="Processing output not found.")
+    output = (output_dir / filename).resolve()
+    if output.parent != output_dir or not output.is_file():
+        raise HTTPException(status_code=404, detail="Processing file not found.")
+    media_type = "application/json" if filename.endswith(".json") else "text/csv"
+    return FileResponse(str(output), filename=filename, media_type=media_type)
+
+
+@app.post("/api/data/processing/open_folder/{session_folder}/{processing_folder}")
+def open_processing_output_folder(session_folder: str, processing_folder: str):
+    if not processing_folder.startswith("signal_processing_") or Path(processing_folder).name != processing_folder:
+        raise HTTPException(status_code=400, detail="Invalid processing folder.")
+    try:
+        session = signal_processing._safe_session(session_folder)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail="Recording not found.") from exc
+    target = (session / processing_folder).resolve()
+    if target.parent != session.resolve() or not target.is_dir():
+        raise HTTPException(status_code=404, detail="Processing folder not found.")
+    try:
+        if sys.platform == "win32":
+            os.startfile(str(target))
+        elif sys.platform == "darwin":
+            subprocess.run(["open", str(target)])
+        else:
+            subprocess.run(["xdg-open", str(target)])
+        return {"opened": True, "path": str(target)}
+    except Exception as exc:
+        return {"opened": False, "error": str(exc), "path": str(target)}
+
 
 # --- Data Storage & Export Endpoints ---
 @app.get("/api/data/sessions")

@@ -17,7 +17,7 @@ def open_browser():
 def main():
     print("=" * 70)
     print("  NeuroRaaga - Carnatic Ragas Acute EEG Acquisition Platform")
-    print("  4-Channel EEG (A1, A2, C3, C4) @ 250 Hz Continuous Recording")
+    print("  4-Channel EEG (O1, O2, T3, T4) @ 250 Hz Continuous Recording")
     print("=" * 70)
 
     try:

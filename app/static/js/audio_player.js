@@ -79,6 +79,7 @@ class RagaAudioController {
       this.audio.src = url;
     }
     this.currentTrack = { url, title, subtitle };
+    this.audio.loop = true;
     
     if (this.titleEl) this.titleEl.textContent = title;
     if (this.subEl) this.subEl.textContent = subtitle;
@@ -92,6 +93,7 @@ class RagaAudioController {
   stopTrack() {
     this.audio.pause();
     this.audio.currentTime = 0;
+    this.audio.loop = false;
     this.isPlaying = false;
     if (this.titleEl) this.titleEl.textContent = "Silent / Idle (No Audio)";
     if (this.subEl) this.subEl.textContent = "Headphone Output Inactive";

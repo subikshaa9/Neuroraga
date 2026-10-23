@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NeuroRaaga — Carnatic Ragas Acute EEG Acquisition Platform</title>
-  <meta name="description" content="High-precision data acquisition dashboard for studying the acute effects of Carnatic ragas (Anandabhairavi, Shubhapantuvarali, Mohanam) on 4-channel EEG (A1, A2, C3, C4).">
-  <link rel="stylesheet" href="/css/style.css">
+  <meta name="description" content="High-precision data acquisition dashboard for studying the acute effects of Carnatic ragas on 4-channel EEG (O1, O2, T3, T4).">
+  <meta name="neuroraaga-build" content="o1-o2-t3-t4-impedance-20261019-1">
+  <link rel="stylesheet" href="/css/style.css?v=20261019-o1o2t3t4">
 </head>
 <body>
 
@@ -21,7 +22,7 @@
       </div>
       <div class="brand-text">
         <h1>NeuroRaaga <span style="font-size: 0.8rem; font-weight: 500; color: var(--amber-light); border: 1px solid var(--border-accent); padding: 2px 8px; border-radius: 9999px;">CARNATIC EEG STUDY</span></h1>
-        <div class="brand-subtitle">Acute Effects on 4-Channel EEG (A1, A2, C3, C4) &bull; 250 Hz Continuous Acquisition</div>
+        <div class="brand-subtitle">Acute Effects on 4-Channel EEG (O1, O2, T3, T4) &bull; 250 Hz Continuous Acquisition</div>
       </div>
     </div>
 
@@ -70,33 +71,33 @@
         </div>
       </div>
 
-      <div class="step-card" data-tab="audio" id="step-audio">
+      <div class="step-card" data-tab="protocol" id="step-protocol">
         <div class="step-number">3</div>
         <div class="step-info">
-          <span class="step-title">Music Library</span>
-          <span class="step-desc">Raga Audio Slots</span>
-        </div>
-      </div>
-
-      <div class="step-card" data-tab="protocol" id="step-protocol">
-        <div class="step-number">4</div>
-        <div class="step-info">
           <span class="step-title">Protocol</span>
-          <span class="step-desc">12-Min Execution</span>
+          <span class="step-desc">18-Min Execution</span>
         </div>
       </div>
 
       <div class="step-card" data-tab="data" id="step-data">
-        <div class="step-number">5</div>
+        <div class="step-number">4</div>
         <div class="step-info">
           <span class="step-title">Data Storage</span>
           <span class="step-desc">Master & Segment CSVs</span>
         </div>
       </div>
+
+      <div class="step-card" data-tab="processing" id="step-processing">
+        <div class="step-number">5</div>
+        <div class="step-info">
+          <span class="step-title">Offline Processing</span>
+          <span class="step-desc">Review & Filter Selected Data</span>
+        </div>
+      </div>
     </nav>
 
     <!-- Workspace Grid -->
-    <div class="workspace-grid">
+    <div class="workspace-grid" id="workspaceGrid">
 
       <!-- Left Column: Step Panels -->
       <aside class="left-workspace">
@@ -108,7 +109,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
               Participant Enrollment
             </h2>
-            <span class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Step 1 of 5</span>
+            <span class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Step 1 of 4</span>
           </div>
 
           <form id="formEnrollment" class="panel-body">
@@ -200,7 +201,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
               Device Connection &amp; Calibration
             </h2>
-            <span class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Step 2 of 5</span>
+              <span class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Step 2 of 4</span>
           </div>
 
           <div class="panel-body">
@@ -229,49 +230,49 @@
 
             <!-- 3-Stage Connection Legend -->
             <div style="display: flex; gap: 10px; font-size: 0.72rem; padding: 4px 0; color: var(--text-muted); flex-wrap: wrap;">
-              <span>🔴 <b>Red</b> = Disconnected (&gt;100kΩ)</span>
-              <span>🟠 <b>Orange</b> = Partial (50–100kΩ)</span>
-              <span>🟢 <b>Green</b> = Connected (&lt;50kΩ)</span>
+              <span>🔴 <b>Poor</b> = ≥1000 kΩ</span>
+              <span>🟠 <b>Orange</b> = 500 to &lt;1000 kΩ</span>
+              <span>🟢 <b>Green</b> = &lt;500 kΩ</span>
             </div>
 
             <!-- 4-Electrode Impedance & Calibration Check -->
             <div>
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span class="form-label">Electrode Status &amp; Frequencies (4 Leads)</span>
-                <span style="font-size: 0.72rem; color: var(--text-dim);">&lt;50 kΩ Target</span>
+                <span style="font-size: 0.72rem; color: var(--text-dim);">Impedance thresholds in kΩ</span>
               </div>
 
               <div class="impedance-grid">
-                <div class="electrode-badge" id="badge-A1">
-                  <span class="electrode-name" style="color: var(--ch-a1);">A1</span>
-                  <span class="electrode-val" id="val-A1">Disconnected</span>
-                  <span class="electrode-status poor" id="stat-A1">🔴 RED</span>
-                  <span class="mono" id="freq-A1" style="font-size: 0.68rem; color: var(--cyan-neural);">0.0 Hz</span>
-                  <span style="font-size: 0.65rem; color: var(--text-dim);">L-Mastoid</span>
+                <div class="electrode-badge" id="badge-O1">
+                  <span class="electrode-name" style="color: var(--ch-a1);">O1</span>
+                  <span class="electrode-val" id="val-O1">Disconnected</span>
+                  <span class="electrode-status poor" id="stat-O1">NO READING</span>
+                  <span class="mono" id="freq-O1" style="font-size: 0.68rem; color: var(--cyan-neural);">0.0 Hz</span>
+                  <span style="font-size: 0.65rem; color: var(--text-dim);">Left Occipital</span>
                 </div>
 
-                <div class="electrode-badge" id="badge-A2">
-                  <span class="electrode-name" style="color: var(--ch-a2);">A2</span>
-                  <span class="electrode-val" id="val-A2">Disconnected</span>
-                  <span class="electrode-status poor" id="stat-A2">🔴 RED</span>
-                  <span class="mono" id="freq-A2" style="font-size: 0.68rem; color: var(--cyan-neural);">0.0 Hz</span>
-                  <span style="font-size: 0.65rem; color: var(--text-dim);">R-Mastoid</span>
+                <div class="electrode-badge" id="badge-O2">
+                  <span class="electrode-name" style="color: var(--ch-a2);">O2</span>
+                  <span class="electrode-val" id="val-O2">Disconnected</span>
+                  <span class="electrode-status poor" id="stat-O2">NO READING</span>
+                  <span class="mono" id="freq-O2" style="font-size: 0.68rem; color: var(--cyan-neural);">0.0 Hz</span>
+                  <span style="font-size: 0.65rem; color: var(--text-dim);">Right Occipital</span>
                 </div>
 
-                <div class="electrode-badge" id="badge-C3">
-                  <span class="electrode-name" style="color: var(--ch-c3);">C3</span>
-                  <span class="electrode-val" id="val-C3">Disconnected</span>
-                  <span class="electrode-status poor" id="stat-C3">🔴 RED</span>
-                  <span class="mono" id="freq-C3" style="font-size: 0.68rem; color: var(--cyan-neural);">0.0 Hz</span>
-                  <span style="font-size: 0.65rem; color: var(--text-dim);">L-Central</span>
+                <div class="electrode-badge" id="badge-T3">
+                  <span class="electrode-name" style="color: var(--ch-c3);">T3</span>
+                  <span class="electrode-val" id="val-T3">Disconnected</span>
+                  <span class="electrode-status poor" id="stat-T3">NO READING</span>
+                  <span class="mono" id="freq-T3" style="font-size: 0.68rem; color: var(--cyan-neural);">0.0 Hz</span>
+                  <span style="font-size: 0.65rem; color: var(--text-dim);">Left Temporal</span>
                 </div>
 
-                <div class="electrode-badge" id="badge-C4">
-                  <span class="electrode-name" style="color: var(--ch-c4);">C4</span>
-                  <span class="electrode-val" id="val-C4">Disconnected</span>
-                  <span class="electrode-status poor" id="stat-C4">🔴 RED</span>
-                  <span class="mono" id="freq-C4" style="font-size: 0.68rem; color: var(--cyan-neural);">0.0 Hz</span>
-                  <span style="font-size: 0.65rem; color: var(--text-dim);">R-Central</span>
+                <div class="electrode-badge" id="badge-T4">
+                  <span class="electrode-name" style="color: var(--ch-c4);">T4</span>
+                  <span class="electrode-val" id="val-T4">Disconnected</span>
+                  <span class="electrode-status poor" id="stat-T4">NO READING</span>
+                  <span class="mono" id="freq-T4" style="font-size: 0.68rem; color: var(--cyan-neural);">0.0 Hz</span>
+                  <span style="font-size: 0.65rem; color: var(--text-dim);">Right Temporal</span>
                 </div>
               </div>
             </div>
@@ -285,50 +286,28 @@
             <!-- Calibration Status Callout -->
             <div id="calibStatusBadge" class="status-pill" style="border-radius: var(--radius-sm); border-color: rgba(244, 63, 94, 0.3);">
               <span class="status-indicator"></span>
-              <span style="font-size: 0.8rem;">Device not connected. Connect headphones to inspect electrodes.</span>
+              <span style="font-size: 0.8rem;">Device not connected. Connect Headband Pro to inspect electrodes.</span>
             </div>
           </div>
         </div>
 
-        <!-- STEP 3: MUSIC LIBRARY / UPLOAD -->
-        <div class="glass-panel tab-content" id="tab-audio">
-          <div class="panel-header">
-            <h2 class="panel-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
-              Music Library &amp; Raga Slots
-            </h2>
-            <span class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Step 3 of 5</span>
-          </div>
-
-          <div class="panel-body">
-            <div style="font-size: 0.8rem; color: var(--text-muted);">
-              Preloaded Carnatic ragas are mapped below. You can preview, upload, or replace files at any time without touching code.
-            </div>
-
-            <div id="slotsContainer" style="display: flex; flex-direction: column; gap: 12px;">
-              <!-- Dynamically populated slots -->
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 4: PROTOCOL TIMELINE & EXECUTION -->
+        <!-- STEP 3: PROTOCOL TIMELINE & EXECUTION -->
         <div class="glass-panel tab-content" id="tab-protocol">
           <div class="panel-header">
             <h2 class="panel-title">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
               Fixed Experimental Protocol
             </h2>
-            <span class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Step 4 of 5</span>
+            <span class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Step 3 of 4</span>
           </div>
 
           <div class="panel-body">
-            <!-- Timing Mode Configuration -->
             <div class="form-group">
               <label class="form-label" for="protocolSpeedSelect">Protocol Timing Sequence</label>
               <select id="protocolSpeedSelect" class="form-select">
-                <option value="120" selected>Standard Study Protocol (2m per segment &bull; 12m total)</option>
-                <option value="15">Fast Testing / Demo Mode (15s per segment &bull; 90s total)</option>
-                <option value="30">Quick Clinical Trial (30s per segment &bull; 3m total)</option>
+                <option value="120" selected>Standard Study Protocol (30s baseline/rests, 4m raga segments &bull; 13m 30s total)</option>
+                <option value="15">Fast Testing / Demo Mode (15s rests, 30s raga segments &bull; 2m 15s total)</option>
+                <option value="30">Quick Clinical Trial (30s rests, 1m raga segments &bull; 4m 30s total)</option>
               </select>
             </div>
 
@@ -336,12 +315,12 @@
             <div class="form-row">
               <div class="status-pill" style="border-radius: var(--radius-sm); flex-direction: column; align-items: flex-start; gap: 2px;">
                 <span style="font-size: 0.72rem; color: var(--text-dim);">STAGE REMAINING</span>
-                <span class="mono" id="segmentTimerDisplay" style="font-size: 1.3rem; font-weight: 800; color: var(--cyan-neural);">02:00</span>
+                <span class="mono" id="segmentTimerDisplay" style="font-size: 1.3rem; font-weight: 800; color: var(--cyan-neural);">00:30</span>
               </div>
 
               <div class="status-pill" style="border-radius: var(--radius-sm); flex-direction: column; align-items: flex-start; gap: 2px;">
                 <span style="font-size: 0.72rem; color: var(--text-dim);">SESSION REMAINING</span>
-                <span class="mono" id="protocolTimerDisplay" style="font-size: 1.3rem; font-weight: 800; color: var(--amber-light);">12:00</span>
+                <span class="mono" id="protocolTimerDisplay" style="font-size: 1.3rem; font-weight: 800; color: var(--amber-light);">13:30</span>
               </div>
             </div>
 
@@ -354,7 +333,7 @@
             <div style="display: flex; gap: 10px; margin-top: 6px;">
               <button class="btn btn-primary btn-block" id="btnStartProtocol">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                Start Continuous 12-Minute Protocol
+                Start Continuous 18-Minute Protocol
               </button>
               <button class="btn btn-danger btn-block" id="btnAbortProtocol" style="display: none;">
                 Abort Session
@@ -363,14 +342,14 @@
           </div>
         </div>
 
-        <!-- STEP 5: DATA STORAGE & EXPORTS -->
+        <!-- STEP 4: DATA STORAGE & EXPORTS -->
         <div class="glass-panel tab-content" id="tab-data">
           <div class="panel-header">
             <h2 class="panel-title">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
               Data Storage &amp; CSV Slices
             </h2>
-            <span class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Step 5 of 5</span>
+            <span class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Step 4 of 4</span>
           </div>
 
           <div class="panel-body">
@@ -396,6 +375,46 @@
           </div>
         </div>
 
+        <!-- STEP 5: NON-DESTRUCTIVE OFFLINE SIGNAL PROCESSING -->
+        <div class="glass-panel tab-content" id="tab-processing">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 5 18 3-9h5"></path></svg>
+              Offline Signal Processing
+            </h2>
+            <span class="mono" style="font-size: 0.75rem; color: var(--text-dim);">Step 5 of 5</span>
+          </div>
+          <div class="panel-body">
+            <p style="font-size: 0.84rem; color: var(--text-muted); margin: 0 0 14px;">
+              Select one volunteer recording to inspect. Originals stay unchanged; filtering only runs after you review the checks and confirm.
+            </p>
+            <div id="processingSessionList" style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 0.8rem; color: var(--text-dim);">Loading recordings…</span>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+              <button class="btn btn-secondary" id="btnInspectProcessing" disabled>Inspect Selected Recording</button>
+              <button class="btn btn-primary" id="btnRunProcessing" disabled>Filter Selected Recording</button>
+            </div>
+            <div id="processingStatus" role="status" style="margin-top: 12px; font-size: 0.82rem; color: var(--text-muted);"></div>
+            <label style="display:flex;align-items:flex-start;gap:8px;margin-top:8px;font-size:0.78rem;color:var(--text-muted);">
+              <input id="processingUnitAcknowledged" type="checkbox" style="margin-top:3px;">
+              I understand the Capsule raw signal's physical unit is not confirmed by the local SDK docs. Do not treat these values as µV; confirm the manufacturer's unit conversion before interpreting amplitudes.
+            </label>
+            <div id="processingValidation" style="margin-top: 10px;"></div>
+            <div id="processingResults" style="margin-top: 10px;"></div>
+            <div style="margin-top: 14px; padding: 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;">
+              <strong>Processing recipe:</strong> each channel is processed independently. The code removes that channel's DC mean and linear trend, then applies a 4th-order zero-phase 0.5–40 Hz Butterworth response at the timestamp-verified rate. The 40 Hz low-pass attenuates 50 Hz, so no extra 50 Hz notch is applied. Synthetic-tone response validation is reported below.
+              <br><strong>Outputs:</strong> the “filtered” CSV keeps original raw columns and every sample, then adds filtered columns and per-channel artifact flags. The “clean” CSV keeps all timestamps but blanks only flagged channel values; it does not delete good samples from other channels. Review flags and protocol annotations. Neither filtering nor automatic flags prove a change was music-caused or guarantee artifact-free EEG.
+              <br><strong>Physical units:</strong> the local Capsule SDK binding documents raw values as floats, but does not provide a volts or microvolts conversion. No unit conversion is guessed; the report marks unit status unconfirmed and says the file is not ready for segmentation.
+            </div>
+            <div id="processingPreviewWrap" style="display: none; margin-top: 16px;">
+              <div class="form-label" id="processingPreviewTitle">Raw vs filtered preview</div>
+              <canvas id="processingPreview" height="360" style="width: 100%; height: 360px; background: #080d16; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);"></canvas>
+              <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 5px;">Gray = raw • Cyan = filtered • Red shading = flagged samples. Each channel is centered and scaled independently so wave shape is visible; this is not an amplitude comparison. Values remain in unconfirmed SDK units.</div>
+            </div>
+          </div>
+        </div>
+
       </aside>
 
       <!-- Right Column: Oscilloscope & Waveform Display -->
@@ -406,23 +425,25 @@
             <div style="display: flex; align-items: center; gap: 12px;">
               <h2 class="panel-title" style="font-size: 1rem;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                Real-Time 4-Channel Waveform Monitor (A1, A2, C3, C4)
+                Real-Time 4-Channel Waveform Monitor (O1, O2, T3, T4)
               </h2>
             </div>
+
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">Reference: frontal electrode pair</div>
 
             <!-- Channel Legend -->
             <div class="channel-legend">
               <div class="legend-item" style="color: var(--ch-a1);">
-                <span class="legend-dot" style="background: var(--ch-a1);"></span> A1 (L-Mastoid)
+                <span class="legend-dot" style="background: var(--ch-a1);"></span> O1 (L-Occipital)
               </div>
               <div class="legend-item" style="color: var(--ch-a2);">
-                <span class="legend-dot" style="background: var(--ch-a2);"></span> A2 (R-Mastoid)
+                <span class="legend-dot" style="background: var(--ch-a2);"></span> O2 (R-Occipital)
               </div>
               <div class="legend-item" style="color: var(--ch-c3);">
-                <span class="legend-dot" style="background: var(--ch-c3);"></span> C3 (L-Central)
+                <span class="legend-dot" style="background: var(--ch-c3);"></span> T3 (L-Temporal)
               </div>
               <div class="legend-item" style="color: var(--ch-c4);">
-                <span class="legend-dot" style="background: var(--ch-c4);"></span> C4 (R-Central)
+                <span class="legend-dot" style="background: var(--ch-c4);"></span> T4 (R-Temporal)
               </div>
             </div>
 
@@ -431,10 +452,13 @@
               <div style="display: flex; align-items: center; gap: 6px;">
                 <span style="font-size: 0.75rem; color: var(--text-muted);">Scale:</span>
                 <select id="selectGain" class="form-select" style="padding: 4px 8px; font-size: 0.78rem;">
+                  <option value="10">&plusmn;10 µV</option>
                   <option value="25">&plusmn;25 µV</option>
                   <option value="50" selected>&plusmn;50 µV</option>
                   <option value="100">&plusmn;100 µV</option>
                   <option value="250">&plusmn;250 µV</option>
+                  <option value="500">&plusmn;500 µV</option>
+                  <option value="1000">&plusmn;1000 µV</option>
                   <option value="auto">Auto Scale</option>
                 </select>
               </div>
@@ -442,12 +466,17 @@
               <div style="display: flex; align-items: center; gap: 6px;">
                 <span style="font-size: 0.75rem; color: var(--text-muted);">Window:</span>
                 <select id="selectTimeWindow" class="form-select" style="padding: 4px 8px; font-size: 0.78rem;">
+                  <option value="1">1 sec</option>
+                  <option value="2">2 sec</option>
                   <option value="5">5 sec</option>
                   <option value="10" selected>10 sec</option>
                   <option value="15">15 sec</option>
+                  <option value="30">30 sec</option>
                 </select>
               </div>
 
+              <button class="btn btn-secondary btn-sm" id="btnZoomIn" title="Increase vertical magnification">Zoom +</button>
+              <button class="btn btn-secondary btn-sm" id="btnZoomOut" title="Decrease vertical magnification">Zoom −</button>
               <button class="btn btn-secondary btn-sm" id="btnPauseScope">Freeze Scope</button>
             </div>
           </div>
@@ -456,7 +485,7 @@
           <div class="canvas-wrapper">
             <canvas id="eegCanvas"></canvas>
             <div class="canvas-watermark">
-              <span class="watermark-hz">250 Hz LIVE</span>
+              <span class="watermark-hz">WAITING FOR EEG</span>
               <span class="watermark-segment" id="watermarkSegment">BASELINE</span>
             </div>
           </div>
@@ -468,7 +497,7 @@
               <span id="protocolInstructionText">Volunteer rests with eyes closed in a quiet posture. Establishing neural baseline.</span>
             </div>
             <div class="mono" style="font-size: 0.75rem;">
-              Sampling: 250 Sa/s &bull; Bandwidth: 0.5 - 50 Hz &bull; Notch: 50 Hz
+              Sampling: 250 Sa/s &bull; Display filter: 0.5-40 Hz + 50 Hz notch &bull; CSV: raw SDK values
             </div>
           </div>
         </div>
@@ -490,7 +519,7 @@
             <div class="progress-bar-bg">
               <div class="progress-bar-fill" id="playerProgressFill"></div>
             </div>
-            <span class="mono" style="font-size: 0.75rem; color: var(--text-muted);" id="playerTimeTot">02:00</span>
+            <span class="mono" style="font-size: 0.75rem; color: var(--text-muted);" id="playerTimeTot">00:30</span>
           </div>
 
           <div style="display: flex; align-items: center; gap: 8px;">
@@ -574,8 +603,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="/js/eeg_canvas.js"></script>
-  <script src="/js/audio_player.js"></script>
-  <script src="/js/app.js"></script>
+  <script src="/js/eeg_canvas.js?v=20261019-o1o2t3t4"></script>
+  <script src="/js/audio_player.js?v=20261019-o1o2t3t4"></script>
+  <script src="/js/app.js?v=20261019-o1o2t3t4-contact-status3"></script>
 </body>
 </html>

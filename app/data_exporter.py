@@ -39,7 +39,7 @@ class SessionDataLogger:
         self.master_csv_path = self.session_dir / self.master_csv_name
         self.master_file = open(self.master_csv_path, "w", newline="", encoding="utf-8")
         self.master_writer = csv.writer(self.master_file)
-        self.master_writer.writerow(["Timestamp", "A1", "A2", "C3", "C4", "Segment"])
+        self.master_writer.writerow(["Timestamp", "O1_raw", "O2_raw", "T3_raw", "T4_raw", "Segment"])
         self.master_file.flush()
         
         # Segment tracking
@@ -78,7 +78,7 @@ class SessionDataLogger:
             slice_path = self.session_dir / slice_filename
             self.current_segment_file = open(slice_path, "w", newline="", encoding="utf-8")
             self.current_segment_writer = csv.writer(self.current_segment_file)
-            self.current_segment_writer.writerow(["Timestamp", "A1", "A2", "C3", "C4", "Segment"])
+            self.current_segment_writer.writerow(["Timestamp", "O1_raw", "O2_raw", "T3_raw", "T4_raw", "Segment"])
             self.current_segment_file.flush()
             
             self.generated_slices.append(slice_filename)
@@ -118,12 +118,12 @@ class SessionDataLogger:
             seg = self.current_segment
             for s in samples_batch:
                 ts = s["timestamp"]
-                a1 = s.get("A1", 0.0)
-                a2 = s.get("A2", 0.0)
-                c3 = s.get("C3", 0.0)
-                c4 = s.get("C4", 0.0)
+                o1 = s.get("O1", 0.0)
+                o2 = s.get("O2", 0.0)
+                t3 = s.get("T3", 0.0)
+                t4 = s.get("T4", 0.0)
                 
-                row = [f"{ts:.6f}", a1, a2, c3, c4, seg]
+                row = [f"{ts:.6f}", o1, o2, t3, t4, seg]
                 self.master_writer.writerow(row)
                 
                 if self.current_segment_writer:
@@ -199,8 +199,11 @@ class SessionDataLogger:
                     "name": self.device_info.get("name"),
                     "type": self.device_info.get("type"),
                     "sampling_frequency_hz": 250.0,
-                    "electrode_montage": ["A1", "A2", "C3", "C4"],
-                    "reference": "Cz / Bipolar"
+                    "electrode_montage": ["O1", "O2", "T3", "T4"],
+                    "reference": "Frontal reference electrodes",
+                    "resistance_values": "Capsule SDK ohms converted to kOhm; stored impedance is capped at 1000 kOhm for status checks, while the UI shows finite SDK readings and OPEN for infinity.",
+                    "csv_signal_values": "Unfiltered SDK raw values in native units; display filtering is not applied to CSV.",
+                    "display_filter": "0.5-40 Hz bandpass with 50 Hz notch"
                 },
                 "calibration_quality": self.calibration_info,
                 "protocol": {
