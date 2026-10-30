@@ -1,0 +1,1564 @@
+{
+  "participant_recording_folder": "NR-P614_20261022_131401",
+  "participant_id": "NR-P614",
+  "output_folder": "signal_processing_final_20261022_173241_326522",
+  "created_at": "2026-10-22 17:34:17",
+  "input_selection": "Original session-root CSVs with four *_raw channels and no *_filtered columns. Prior processing subfolders and filtered exports are excluded.",
+  "filter": {
+    "type": "4th-order Butterworth high-pass and low-pass magnitude responses combined as a 0.5\u201340 Hz bandpass",
+    "implementation": "Zero-phase FFT-domain application of the Butterworth magnitude response with 3-second reflection padding; each timestamp-contiguous valid span is filtered independently.",
+    "order_per_corner": 4,
+    "low_cutoff_hz": 0.5,
+    "high_cutoff_hz": 40.0,
+    "notch_50_hz": false,
+    "dc_offset_and_linear_detrend": "Removed per channel and per contiguous finite span before filtering, matching the existing signal-processing pipeline.",
+    "sample_rate_hz": "Verified independently from each file's timestamp median interval; expected about 250 Hz.",
+    "edge_handling": "First/last 1 second of each filtered span flagged; spans shorter than 5 seconds are left unfiltered and their filtered values remain blank.",
+    "response_validation": {
+      "method": "Synthetic sine inputs, measured interior amplitude ratio versus analytic Butterworth response",
+      "tolerance_absolute_gain": 0.03,
+      "max_absolute_error": 1e-05,
+      "passed": true,
+      "points": [
+        {
+          "frequency_hz": 0.1,
+          "expected_gain": 0.0016,
+          "measured_gain": 0.0016,
+          "absolute_error": 0.0
+        },
+        {
+          "frequency_hz": 0.25,
+          "expected_gain": 0.06238,
+          "measured_gain": 0.06239,
+          "absolute_error": 1e-05
+        },
+        {
+          "frequency_hz": 0.5,
+          "expected_gain": 0.70711,
+          "measured_gain": 0.7071,
+          "absolute_error": 0.0
+        },
+        {
+          "frequency_hz": 1.0,
+          "expected_gain": 0.99805,
+          "measured_gain": 0.99806,
+          "absolute_error": 1e-05
+        },
+        {
+          "frequency_hz": 10.0,
+          "expected_gain": 0.99999,
+          "measured_gain": 1.0,
+          "absolute_error": 1e-05
+        },
+        {
+          "frequency_hz": 30.0,
+          "expected_gain": 0.95341,
+          "measured_gain": 0.95342,
+          "absolute_error": 1e-05
+        },
+        {
+          "frequency_hz": 40.0,
+          "expected_gain": 0.70711,
+          "measured_gain": 0.70711,
+          "absolute_error": 0.0
+        },
+        {
+          "frequency_hz": 50.0,
+          "expected_gain": 0.37904,
+          "measured_gain": 0.37904,
+          "absolute_error": 0.0
+        },
+        {
+          "frequency_hz": 60.0,
+          "expected_gain": 0.19379,
+          "measured_gain": 0.19379,
+          "absolute_error": 0.0
+        },
+        {
+          "frequency_hz": 100.0,
+          "expected_gain": 0.02559,
+          "measured_gain": 0.02559,
+          "absolute_error": 0.0
+        }
+      ]
+    }
+  },
+  "column_handling": {
+    "preserve_timestamp": true,
+    "preserve_original_channel_values": true,
+    "rename_only_in_export": {
+      "Segment": "Recording_Condition"
+    },
+    "condition_values_unchanged": true,
+    "retain_artifact_samples": true,
+    "filtered_channels": [
+      "O1",
+      "O2",
+      "T3",
+      "T4"
+    ]
+  },
+  "acceptance": "Technical file checks do not certify EEG as artifact-free or music-related. Physical units remain unconfirmed. Review flagged intervals, especially T4, before scientific interpretation or segmentation.",
+  "files": [
+    {
+      "source_file": "NeuroRaaga_NR-P614_master.csv",
+      "final_filtered_file": "NeuroRaaga_NR-P614_master_final_filtered.csv",
+      "rows": 202825,
+      "channel_names": [
+        "O1",
+        "O2",
+        "T3",
+        "T4"
+      ],
+      "sample_rate_hz": 250.0032,
+      "quality_flagged_samples_by_channel": {
+        "O1": 18337,
+        "O2": 500,
+        "T3": 2303,
+        "T4": 14844
+      },
+      "quality_flagged_percent_by_channel": {
+        "O1": 9.04,
+        "O2": 0.25,
+        "T3": 1.14,
+        "T4": 7.32
+      },
+      "filter_edge_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "validation": {
+        "row_count_preserved": true,
+        "timestamps_preserved_exactly": true,
+        "original_raw_channel_values_preserved_exactly": true,
+        "recording_condition_renamed_and_values_preserved": true,
+        "timestamp_rate_hz": 250.0032,
+        "filtered_finite_sample_counts": {
+          "O1": 202825,
+          "O2": 202825,
+          "T3": 202825,
+          "T4": 202825
+        },
+        "filtering_source_is_original_raw_csv": true,
+        "filter_applied_once_to_original_source": true,
+        "passed": true
+      },
+      "quality_concern": "TECHNICAL VALIDATION PASSED; artifact/edge flags remain and require review.",
+      "sampling": {
+        "rows": 202825,
+        "invalid_timestamps": 0,
+        "nonmonotonic_steps": 0,
+        "gaps_over_6ms": 0,
+        "sampling_rate_hz": 250.0032,
+        "target_rate_hz": 250.0,
+        "duration_sec": 811.296,
+        "rate_matches_250hz": true
+      },
+      "longest_flagged_intervals_by_channel": {
+        "O1": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 72.344,
+            "duration_sec": 72.347,
+            "reasons": [
+              "filter_edge",
+              "large_amplitude"
+            ]
+          },
+          {
+            "start_sec": 810.3,
+            "end_sec": 811.296,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "O2": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 810.3,
+            "end_sec": 811.296,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T3": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 7.788,
+            "duration_sec": 7.792,
+            "reasons": [
+              "filter_edge",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 810.3,
+            "end_sec": 811.296,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 662.056,
+            "end_sec": 662.472,
+            "duration_sec": 0.42,
+            "reasons": [
+              "sudden_jump"
+            ]
+          }
+        ],
+        "T4": [
+          {
+            "start_sec": 199.392,
+            "end_sec": 205.612,
+            "duration_sec": 6.224,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 496.02,
+            "end_sec": 499.3,
+            "duration_sec": 3.284,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 758.468,
+            "end_sec": 761.748,
+            "duration_sec": 3.284,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 646.952,
+            "end_sec": 649.888,
+            "duration_sec": 2.94,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 762.2,
+            "end_sec": 764.272,
+            "duration_sec": 2.076,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 466.152,
+            "end_sec": 468.16,
+            "duration_sec": 2.012,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 461.04,
+            "end_sec": 462.676,
+            "duration_sec": 1.64,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 748.216,
+            "end_sec": 749.74,
+            "duration_sec": 1.528,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 44.016,
+            "end_sec": 45.424,
+            "duration_sec": 1.412,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 661.056,
+            "end_sec": 662.46,
+            "duration_sec": 1.408,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 638.088,
+            "end_sec": 639.456,
+            "duration_sec": 1.372,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 209.796,
+            "end_sec": 211.156,
+            "duration_sec": 1.364,
+            "reasons": [
+              "sudden_jump"
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "source_file": "NeuroRaaga_NR-P614_segment_baseline.csv",
+      "final_filtered_file": "NeuroRaaga_NR-P614_segment_baseline_final_filtered.csv",
+      "rows": 7475,
+      "channel_names": [
+        "O1",
+        "O2",
+        "T3",
+        "T4"
+      ],
+      "sample_rate_hz": 250.0032,
+      "quality_flagged_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "quality_flagged_percent_by_channel": {
+        "O1": 6.69,
+        "O2": 6.69,
+        "T3": 6.69,
+        "T4": 6.69
+      },
+      "filter_edge_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "validation": {
+        "row_count_preserved": true,
+        "timestamps_preserved_exactly": true,
+        "original_raw_channel_values_preserved_exactly": true,
+        "recording_condition_renamed_and_values_preserved": true,
+        "timestamp_rate_hz": 250.0032,
+        "filtered_finite_sample_counts": {
+          "O1": 7475,
+          "O2": 7475,
+          "T3": 7475,
+          "T4": 7475
+        },
+        "filtering_source_is_original_raw_csv": true,
+        "filter_applied_once_to_original_source": true,
+        "passed": true
+      },
+      "quality_concern": "TECHNICAL VALIDATION PASSED; artifact/edge flags remain and require review.",
+      "sampling": {
+        "rows": 7475,
+        "invalid_timestamps": 0,
+        "nonmonotonic_steps": 0,
+        "gaps_over_6ms": 0,
+        "sampling_rate_hz": 250.0032,
+        "target_rate_hz": 250.0,
+        "duration_sec": 29.896,
+        "rate_matches_250hz": true
+      },
+      "longest_flagged_intervals_by_channel": {
+        "O1": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 28.9,
+            "end_sec": 29.896,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "O2": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 28.9,
+            "end_sec": 29.896,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T3": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 28.9,
+            "end_sec": 29.896,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T4": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 28.9,
+            "end_sec": 29.896,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "source_file": "NeuroRaaga_NR-P614_segment_raga1.csv",
+      "final_filtered_file": "NeuroRaaga_NR-P614_segment_raga1_final_filtered.csv",
+      "rows": 60125,
+      "channel_names": [
+        "O1",
+        "O2",
+        "T3",
+        "T4"
+      ],
+      "sample_rate_hz": 250.0032,
+      "quality_flagged_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 4268
+      },
+      "quality_flagged_percent_by_channel": {
+        "O1": 0.83,
+        "O2": 0.83,
+        "T3": 0.83,
+        "T4": 7.1
+      },
+      "filter_edge_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "validation": {
+        "row_count_preserved": true,
+        "timestamps_preserved_exactly": true,
+        "original_raw_channel_values_preserved_exactly": true,
+        "recording_condition_renamed_and_values_preserved": true,
+        "timestamp_rate_hz": 250.0032,
+        "filtered_finite_sample_counts": {
+          "O1": 60125,
+          "O2": 60125,
+          "T3": 60125,
+          "T4": 60125
+        },
+        "filtering_source_is_original_raw_csv": true,
+        "filter_applied_once_to_original_source": true,
+        "passed": true
+      },
+      "quality_concern": "TECHNICAL VALIDATION PASSED; artifact/edge flags remain and require review.",
+      "sampling": {
+        "rows": 60125,
+        "invalid_timestamps": 0,
+        "nonmonotonic_steps": 0,
+        "gaps_over_6ms": 0,
+        "sampling_rate_hz": 250.0032,
+        "target_rate_hz": 250.0,
+        "duration_sec": 240.496,
+        "rate_matches_250hz": true
+      },
+      "longest_flagged_intervals_by_channel": {
+        "O1": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.5,
+            "end_sec": 240.496,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "O2": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.5,
+            "end_sec": 240.496,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T3": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.5,
+            "end_sec": 240.496,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T4": [
+          {
+            "start_sec": 169.492,
+            "end_sec": 175.712,
+            "duration_sec": 6.224,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 14.116,
+            "end_sec": 15.524,
+            "duration_sec": 1.412,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 181.42,
+            "end_sec": 182.72,
+            "duration_sec": 1.304,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 179.908,
+            "end_sec": 181.1,
+            "duration_sec": 1.196,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.5,
+            "end_sec": 240.496,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 161.632,
+            "end_sec": 162.488,
+            "duration_sec": 0.86,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 175.852,
+            "end_sec": 176.708,
+            "duration_sec": 0.86,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 37.396,
+            "end_sec": 38.12,
+            "duration_sec": 0.728,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 8.752,
+            "end_sec": 9.452,
+            "duration_sec": 0.704,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 163.384,
+            "end_sec": 164.084,
+            "duration_sec": 0.704,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 162.596,
+            "end_sec": 163.256,
+            "duration_sec": 0.664,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "source_file": "NeuroRaaga_NR-P614_segment_raga2.csv",
+      "final_filtered_file": "NeuroRaaga_NR-P614_segment_raga2_final_filtered.csv",
+      "rows": 60075,
+      "channel_names": [
+        "O1",
+        "O2",
+        "T3",
+        "T4"
+      ],
+      "sample_rate_hz": 250.0032,
+      "quality_flagged_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 601,
+        "T4": 3308
+      },
+      "quality_flagged_percent_by_channel": {
+        "O1": 0.83,
+        "O2": 0.83,
+        "T3": 1.0,
+        "T4": 5.51
+      },
+      "filter_edge_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "validation": {
+        "row_count_preserved": true,
+        "timestamps_preserved_exactly": true,
+        "original_raw_channel_values_preserved_exactly": true,
+        "recording_condition_renamed_and_values_preserved": true,
+        "timestamp_rate_hz": 250.0032,
+        "filtered_finite_sample_counts": {
+          "O1": 60075,
+          "O2": 60075,
+          "T3": 60075,
+          "T4": 60075
+        },
+        "filtering_source_is_original_raw_csv": true,
+        "filter_applied_once_to_original_source": true,
+        "passed": true
+      },
+      "quality_concern": "TECHNICAL VALIDATION PASSED; artifact/edge flags remain and require review.",
+      "sampling": {
+        "rows": 60075,
+        "invalid_timestamps": 0,
+        "nonmonotonic_steps": 0,
+        "gaps_over_6ms": 0,
+        "sampling_rate_hz": 250.0032,
+        "target_rate_hz": 250.0,
+        "duration_sec": 240.296,
+        "rate_matches_250hz": true
+      },
+      "longest_flagged_intervals_by_channel": {
+        "O1": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.3,
+            "end_sec": 240.296,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "O2": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.3,
+            "end_sec": 240.296,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T3": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.3,
+            "end_sec": 240.296,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 39.356,
+            "end_sec": 39.756,
+            "duration_sec": 0.404,
+            "reasons": [
+              "sudden_jump"
+            ]
+          }
+        ],
+        "T4": [
+          {
+            "start_sec": 195.416,
+            "end_sec": 198.7,
+            "duration_sec": 3.288,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 165.548,
+            "end_sec": 167.56,
+            "duration_sec": 2.016,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 160.436,
+            "end_sec": 162.112,
+            "duration_sec": 1.68,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.3,
+            "end_sec": 240.296,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 12.444,
+            "end_sec": 13.388,
+            "duration_sec": 0.948,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 182.9,
+            "end_sec": 183.72,
+            "duration_sec": 0.824,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 208.548,
+            "end_sec": 209.224,
+            "duration_sec": 0.68,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 122.996,
+            "end_sec": 123.628,
+            "duration_sec": 0.636,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 167.784,
+            "end_sec": 168.388,
+            "duration_sec": 0.608,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 9.38,
+            "end_sec": 9.928,
+            "duration_sec": 0.552,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "source_file": "NeuroRaaga_NR-P614_segment_raga3.csv",
+      "final_filtered_file": "NeuroRaaga_NR-P614_segment_raga3_final_filtered.csv",
+      "rows": 60075,
+      "channel_names": [
+        "O1",
+        "O2",
+        "T3",
+        "T4"
+      ],
+      "sample_rate_hz": 250.0032,
+      "quality_flagged_samples_by_channel": {
+        "O1": 601,
+        "O2": 500,
+        "T3": 2888,
+        "T4": 8022
+      },
+      "quality_flagged_percent_by_channel": {
+        "O1": 1.0,
+        "O2": 0.83,
+        "T3": 4.81,
+        "T4": 13.35
+      },
+      "filter_edge_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "validation": {
+        "row_count_preserved": true,
+        "timestamps_preserved_exactly": true,
+        "original_raw_channel_values_preserved_exactly": true,
+        "recording_condition_renamed_and_values_preserved": true,
+        "timestamp_rate_hz": 250.0032,
+        "filtered_finite_sample_counts": {
+          "O1": 60075,
+          "O2": 60075,
+          "T3": 60075,
+          "T4": 60075
+        },
+        "filtering_source_is_original_raw_csv": true,
+        "filter_applied_once_to_original_source": true,
+        "passed": true
+      },
+      "quality_concern": "TECHNICAL VALIDATION PASSED; artifact/edge flags remain and require review.",
+      "sampling": {
+        "rows": 60075,
+        "invalid_timestamps": 0,
+        "nonmonotonic_steps": 0,
+        "gaps_over_6ms": 0,
+        "sampling_rate_hz": 250.0032,
+        "target_rate_hz": 250.0,
+        "duration_sec": 240.296,
+        "rate_matches_250hz": true
+      },
+      "longest_flagged_intervals_by_channel": {
+        "O1": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.3,
+            "end_sec": 240.296,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 91.056,
+            "end_sec": 91.456,
+            "duration_sec": 0.404,
+            "reasons": [
+              "sudden_jump"
+            ]
+          }
+        ],
+        "O2": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.3,
+            "end_sec": 240.296,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T3": [
+          {
+            "start_sec": 82.924,
+            "end_sec": 84.464,
+            "duration_sec": 1.544,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 72.544,
+            "end_sec": 73.904,
+            "duration_sec": 1.364,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 90.16,
+            "end_sec": 91.484,
+            "duration_sec": 1.328,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.3,
+            "end_sec": 240.296,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 84.784,
+            "end_sec": 85.652,
+            "duration_sec": 0.872,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 1.036,
+            "end_sec": 1.436,
+            "duration_sec": 0.404,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 2.476,
+            "end_sec": 2.876,
+            "duration_sec": 0.404,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 3.796,
+            "end_sec": 4.196,
+            "duration_sec": 0.404,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 4.636,
+            "end_sec": 5.036,
+            "duration_sec": 0.404,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 45.46,
+            "end_sec": 45.86,
+            "duration_sec": 0.404,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 54.64,
+            "end_sec": 55.04,
+            "duration_sec": 0.404,
+            "reasons": [
+              "sudden_jump"
+            ]
+          }
+        ],
+        "T4": [
+          {
+            "start_sec": 187.468,
+            "end_sec": 190.748,
+            "duration_sec": 3.284,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 75.944,
+            "end_sec": 78.888,
+            "duration_sec": 2.948,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 191.192,
+            "end_sec": 193.272,
+            "duration_sec": 2.084,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 177.212,
+            "end_sec": 178.74,
+            "duration_sec": 1.532,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 90.056,
+            "end_sec": 91.46,
+            "duration_sec": 1.408,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 67.088,
+            "end_sec": 68.456,
+            "duration_sec": 1.372,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 72.736,
+            "end_sec": 74.06,
+            "duration_sec": 1.328,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 237.832,
+            "end_sec": 238.992,
+            "duration_sec": 1.164,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 69.748,
+            "end_sec": 70.868,
+            "duration_sec": 1.124,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 232.476,
+            "end_sec": 233.568,
+            "duration_sec": 1.096,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 180.128,
+            "end_sec": 181.212,
+            "duration_sec": 1.088,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 88.604,
+            "end_sec": 89.68,
+            "duration_sec": 1.08,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "source_file": "NeuroRaaga_NR-P614_segment_rest1.csv",
+      "final_filtered_file": "NeuroRaaga_NR-P614_segment_rest1_final_filtered.csv",
+      "rows": 7550,
+      "channel_names": [
+        "O1",
+        "O2",
+        "T3",
+        "T4"
+      ],
+      "sample_rate_hz": 250.0032,
+      "quality_flagged_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 7462,
+        "T4": 500
+      },
+      "quality_flagged_percent_by_channel": {
+        "O1": 6.62,
+        "O2": 6.62,
+        "T3": 98.83,
+        "T4": 6.62
+      },
+      "filter_edge_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "validation": {
+        "row_count_preserved": true,
+        "timestamps_preserved_exactly": true,
+        "original_raw_channel_values_preserved_exactly": true,
+        "recording_condition_renamed_and_values_preserved": true,
+        "timestamp_rate_hz": 250.0032,
+        "filtered_finite_sample_counts": {
+          "O1": 7550,
+          "O2": 7550,
+          "T3": 7550,
+          "T4": 7550
+        },
+        "filtering_source_is_original_raw_csv": true,
+        "filter_applied_once_to_original_source": true,
+        "passed": true
+      },
+      "quality_concern": "TECHNICAL VALIDATION PASSED; artifact/edge flags remain and require review.",
+      "sampling": {
+        "rows": 7550,
+        "invalid_timestamps": 0,
+        "nonmonotonic_steps": 0,
+        "gaps_over_6ms": 0,
+        "sampling_rate_hz": 250.0032,
+        "target_rate_hz": 250.0,
+        "duration_sec": 30.196,
+        "rate_matches_250hz": true
+      },
+      "longest_flagged_intervals_by_channel": {
+        "O1": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 29.2,
+            "end_sec": 30.196,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "O2": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 29.2,
+            "end_sec": 30.196,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T3": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 27.728,
+            "duration_sec": 27.732,
+            "reasons": [
+              "filter_edge",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 28.084,
+            "end_sec": 30.196,
+            "duration_sec": 2.116,
+            "reasons": [
+              "filter_edge",
+              "sudden_jump"
+            ]
+          }
+        ],
+        "T4": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 29.2,
+            "end_sec": 30.196,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "source_file": "NeuroRaaga_NR-P614_segment_rest2.csv",
+      "final_filtered_file": "NeuroRaaga_NR-P614_segment_rest2_final_filtered.csv",
+      "rows": 7525,
+      "channel_names": [
+        "O1",
+        "O2",
+        "T3",
+        "T4"
+      ],
+      "sample_rate_hz": 250.0032,
+      "quality_flagged_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 7297,
+        "T4": 982
+      },
+      "quality_flagged_percent_by_channel": {
+        "O1": 6.64,
+        "O2": 6.64,
+        "T3": 96.97,
+        "T4": 13.05
+      },
+      "filter_edge_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "validation": {
+        "row_count_preserved": true,
+        "timestamps_preserved_exactly": true,
+        "original_raw_channel_values_preserved_exactly": true,
+        "recording_condition_renamed_and_values_preserved": true,
+        "timestamp_rate_hz": 250.0032,
+        "filtered_finite_sample_counts": {
+          "O1": 7525,
+          "O2": 7525,
+          "T3": 7525,
+          "T4": 7525
+        },
+        "filtering_source_is_original_raw_csv": true,
+        "filter_applied_once_to_original_source": true,
+        "passed": true
+      },
+      "quality_concern": "TECHNICAL VALIDATION PASSED; artifact/edge flags remain and require review.",
+      "sampling": {
+        "rows": 7525,
+        "invalid_timestamps": 0,
+        "nonmonotonic_steps": 0,
+        "gaps_over_6ms": 0,
+        "sampling_rate_hz": 250.0032,
+        "target_rate_hz": 250.0,
+        "duration_sec": 30.096,
+        "rate_matches_250hz": true
+      },
+      "longest_flagged_intervals_by_channel": {
+        "O1": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 29.1,
+            "end_sec": 30.096,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "O2": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 29.1,
+            "end_sec": 30.096,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T3": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 25.332,
+            "duration_sec": 25.336,
+            "reasons": [
+              "filter_edge",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 27.416,
+            "end_sec": 30.096,
+            "duration_sec": 2.684,
+            "reasons": [
+              "filter_edge",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 25.412,
+            "end_sec": 26.172,
+            "duration_sec": 0.764,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 26.252,
+            "end_sec": 26.652,
+            "duration_sec": 0.404,
+            "reasons": [
+              "sudden_jump"
+            ]
+          }
+        ],
+        "T4": [
+          {
+            "start_sec": 3.62,
+            "end_sec": 5.028,
+            "duration_sec": 1.412,
+            "reasons": [
+              "large_amplitude",
+              "near_full_scale_candidate",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 29.1,
+            "end_sec": 30.096,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 9.248,
+            "end_sec": 9.76,
+            "duration_sec": 0.516,
+            "reasons": [
+              "large_amplitude",
+              "sudden_jump"
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    }
+  ],
+  "skipped_files": [],
+  "technical_validation_passed_files": 7,
+  "files_with_unresolved_quality_flags": 7,
+  "signal_units": {
+    "status": "UNCONFIRMED_PHYSICAL_UNIT",
+    "stored_values": "Native Capsule SDK raw-value units; no volts or microvolts conversion is documented or applied."
+  },
+  "quality_flag_rules": {
+    "near_full_scale_candidate": "Absolute sample >=0.399 native units, provisionally flagged because it is numerically near the supplied +/-0.4 device range; physical unit is unconfirmed.",
+    "large_amplitude": "More than 8 robust MAD standard deviations from the channel median.",
+    "sudden_jump": "One-sample change more than 10 robust MAD standard deviations of first differences.",
+    "flatline_over_1s": "Consecutive identical values for at least one second.",
+    "timestamp_gap_or_order": "Nonpositive step or step exceeding 1.5/250 seconds.",
+    "filter_edge": "First/last 1 second of filtered span.",
+    "unfiltered_or_invalid": "No filtered value for invalid or shorter-than-5-second spans."
+  }
+}

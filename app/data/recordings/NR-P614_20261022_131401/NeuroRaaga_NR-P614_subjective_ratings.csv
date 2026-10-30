@@ -1,0 +1,7 @@
+ParticipantID,Condition,Segment,Attention,Relaxation,Stress,SubmittedAt
+NR-P614,baseline,baseline,5.0,5.0,5.0,2026-10-22T13:14:33.901499
+NR-P614,raga1,raga1,5.0,5.0,5.0,2026-10-22T13:18:35.900174
+NR-P614,rest1,rest1,5.0,5.0,5.0,2026-10-22T13:19:04.222114
+NR-P614,raga2,raga2,5.0,5.0,5.0,2026-10-22T13:23:04.860495
+NR-P614,rest2,rest2,5.0,5.0,5.0,2026-10-22T13:23:34.831978
+NR-P614,raga3,raga3,5.0,5.0,5.0,2026-10-22T13:27:38.187088

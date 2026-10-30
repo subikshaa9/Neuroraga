@@ -1,0 +1,217 @@
+{
+  "study_name": "NeuroRaaga Carnatic Ragas EEG Study",
+  "participant": {
+    "participant_id": "TEST-VOLUNTEER-01",
+    "name": "Dr. Ananya Iyer",
+    "age": 29,
+    "sex": "Female",
+    "sleep_quality_previous_night": "Good (7-8 hrs, normal)",
+    "caffeine_intake_test_day": "None",
+    "enrollment_timestamp": "2026-09-25 17:27:49"
+  },
+  "device": {
+    "serial_id": "SIM-NEURORAAGA-250",
+    "name": "NeuroRaaga Precision EEG Simulator",
+    "type": "Synthetic Headphone Pro (A1, A2, C3, C4)",
+    "sampling_frequency_hz": 250.0,
+    "electrode_montage": [
+      "A1",
+      "A2",
+      "C3",
+      "C4"
+    ],
+    "reference": "Cz / Bipolar"
+  },
+  "calibration_quality": {
+    "timestamp": 1790337468.7603328,
+    "duration_sec": 3.5,
+    "overall_status": "EXCELLENT",
+    "ready_for_protocol": true,
+    "sample_rate_hz": 250.0,
+    "channels": {
+      "A1": {
+        "impedance_kohm": 14.2,
+        "rms_uV": 10.99,
+        "std_uV": 10.99,
+        "ptp_uV": 55.81,
+        "status": "EXCELLENT",
+        "passed": true
+      },
+      "A2": {
+        "impedance_kohm": 15.8,
+        "rms_uV": 10.71,
+        "std_uV": 10.71,
+        "ptp_uV": 58.95,
+        "status": "EXCELLENT",
+        "passed": true
+      },
+      "C3": {
+        "impedance_kohm": 18.1,
+        "rms_uV": 14.95,
+        "std_uV": 14.95,
+        "ptp_uV": 69.61,
+        "status": "EXCELLENT",
+        "passed": true
+      },
+      "C4": {
+        "impedance_kohm": 17.4,
+        "rms_uV": 14.52,
+        "std_uV": 14.51,
+        "ptp_uV": 68.9,
+        "status": "EXCELLENT",
+        "passed": true
+      }
+    },
+    "message": "Signal quality verified. Ready for baseline recording."
+  },
+  "protocol": {
+    "total_duration_sec": 24.06,
+    "total_samples_collected": 5940,
+    "expected_sample_rate": 250.0,
+    "actual_sample_rate": 246.86,
+    "segments": {
+      "baseline": {
+        "segment": "baseline",
+        "slice_filename": "NeuroRaaga_TEST-VOLUNTEER-01_segment_baseline.csv",
+        "start_time_iso": "2026-09-25T17:27:49.204403",
+        "start_timestamp_epoch": 1790337469.200929,
+        "audio_track": null,
+        "sample_count": 990,
+        "end_time_iso": "2026-09-25T17:27:53.211763",
+        "end_timestamp_epoch": 1790337473.2117577,
+        "duration_sec": 4.01
+      },
+      "raga1": {
+        "segment": "raga1",
+        "slice_filename": "NeuroRaaga_TEST-VOLUNTEER-01_segment_raga1.csv",
+        "start_time_iso": "2026-09-25T17:27:53.212544",
+        "start_timestamp_epoch": 1790337473.2118082,
+        "audio_track": {
+          "slot_id": "raga1",
+          "label": "Raga 1",
+          "default_title": "Anandabhairavi",
+          "current_title": "Anandabhairavi",
+          "filename": "anandabhairavi.wav",
+          "filepath": "C:\\Users\\msubi\\Downloads\\Neuroraga\\app\\audio\\anandabhairavi.wav",
+          "url": "/api/audio/file/anandabhairavi.wav",
+          "duration_sec": 125.0,
+          "is_custom": false,
+          "mood_description": "Calming, devotional, soothing vakra phrases (Natabhairavi janya)"
+        },
+        "sample_count": 990,
+        "end_time_iso": "2026-09-25T17:27:57.221376",
+        "end_timestamp_epoch": 1790337477.2213652,
+        "duration_sec": 4.01
+      },
+      "rest1": {
+        "segment": "rest1",
+        "slice_filename": "NeuroRaaga_TEST-VOLUNTEER-01_segment_rest1.csv",
+        "start_time_iso": "2026-09-25T17:27:57.222513",
+        "start_timestamp_epoch": 1790337477.2214434,
+        "audio_track": null,
+        "sample_count": 990,
+        "end_time_iso": "2026-09-25T17:28:01.230249",
+        "end_timestamp_epoch": 1790337481.230244,
+        "duration_sec": 4.01
+      },
+      "raga2": {
+        "segment": "raga2",
+        "slice_filename": "NeuroRaaga_TEST-VOLUNTEER-01_segment_raga2.csv",
+        "start_time_iso": "2026-09-25T17:28:01.231306",
+        "start_timestamp_epoch": 1790337481.2303085,
+        "audio_track": {
+          "slot_id": "raga2",
+          "label": "Raga 2",
+          "default_title": "Shubhapantuvarali",
+          "current_title": "Shubhapantuvarali",
+          "filename": "shubhapantuvarali.wav",
+          "filepath": "C:\\Users\\msubi\\Downloads\\Neuroraga\\app\\audio\\shubhapantuvarali.wav",
+          "url": "/api/audio/file/shubhapantuvarali.wav",
+          "duration_sec": 125.0,
+          "is_custom": false,
+          "mood_description": "Contemplative, profound pathos, introspective (45th Melakarta)"
+        },
+        "sample_count": 990,
+        "end_time_iso": "2026-09-25T17:28:05.244256",
+        "end_timestamp_epoch": 1790337485.2442505,
+        "duration_sec": 4.01
+      },
+      "rest2": {
+        "segment": "rest2",
+        "slice_filename": "NeuroRaaga_TEST-VOLUNTEER-01_segment_rest2.csv",
+        "start_time_iso": "2026-09-25T17:28:05.245773",
+        "start_timestamp_epoch": 1790337485.2443113,
+        "audio_track": null,
+        "sample_count": 990,
+        "end_time_iso": "2026-09-25T17:28:09.251410",
+        "end_timestamp_epoch": 1790337489.251404,
+        "duration_sec": 4.01
+      },
+      "raga3": {
+        "segment": "raga3",
+        "slice_filename": "NeuroRaaga_TEST-VOLUNTEER-01_segment_raga3.csv",
+        "start_time_iso": "2026-09-25T17:28:09.252408",
+        "start_timestamp_epoch": 1790337489.251464,
+        "audio_track": {
+          "slot_id": "raga3",
+          "label": "Raga 3",
+          "default_title": "Mohanam",
+          "current_title": "Mohanam",
+          "filename": "mohanam.wav",
+          "filepath": "C:\\Users\\msubi\\Downloads\\Neuroraga\\app\\audio\\mohanam.wav",
+          "url": "/api/audio/file/mohanam.wav",
+          "duration_sec": 125.0,
+          "is_custom": false,
+          "mood_description": "Joyous, uplifting, bright pentatonic melody (Harikambhoji/Kalyani janya)"
+        },
+        "sample_count": 990,
+        "end_time_iso": "2026-09-25T17:28:13.260721",
+        "end_timestamp_epoch": 1790337493.260715,
+        "duration_sec": 4.01
+      }
+    }
+  },
+  "subjective_ratings": {
+    "baseline": {
+      "condition": "baseline",
+      "segment": "baseline",
+      "attention": 6.0,
+      "relaxation": 8.0,
+      "stress": 2.0,
+      "notes": "Baseline rest feels calm",
+      "submitted_at": "2026-09-25T17:27:56.259401"
+    },
+    "raga1": {
+      "condition": "raga1",
+      "segment": "raga1",
+      "attention": 8.0,
+      "relaxation": 9.0,
+      "stress": 1.0,
+      "notes": "Anandabhairavi evokes deep tranquility",
+      "submitted_at": "2026-09-25T17:28:00.293700"
+    },
+    "raga2": {
+      "condition": "raga2",
+      "segment": "raga2",
+      "attention": 9.0,
+      "relaxation": 4.0,
+      "stress": 5.0,
+      "notes": "Shubhapantuvarali feels introspective and emotionally intense",
+      "submitted_at": "2026-09-25T17:28:08.382976"
+    }
+  },
+  "files": {
+    "session_folder": "C:\\Users\\msubi\\Downloads\\Neuroraga\\app\\data\\recordings\\TEST-VOLUNTEER-01_20260925_172749",
+    "master_csv": "NeuroRaaga_TEST-VOLUNTEER-01_master.csv",
+    "segment_slices": [
+      "NeuroRaaga_TEST-VOLUNTEER-01_segment_baseline.csv",
+      "NeuroRaaga_TEST-VOLUNTEER-01_segment_raga1.csv",
+      "NeuroRaaga_TEST-VOLUNTEER-01_segment_rest1.csv",
+      "NeuroRaaga_TEST-VOLUNTEER-01_segment_raga2.csv",
+      "NeuroRaaga_TEST-VOLUNTEER-01_segment_rest2.csv",
+      "NeuroRaaga_TEST-VOLUNTEER-01_segment_raga3.csv"
+    ],
+    "ratings_csv": "NeuroRaaga_TEST-VOLUNTEER-01_subjective_ratings.csv",
+    "metadata_json": "NeuroRaaga_TEST-VOLUNTEER-01_metadata.json"
+  }
+}

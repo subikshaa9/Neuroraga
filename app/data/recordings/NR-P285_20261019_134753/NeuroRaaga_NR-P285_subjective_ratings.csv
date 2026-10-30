@@ -1,0 +1,7 @@
+ParticipantID,Condition,Segment,Attention,Relaxation,Stress,SubmittedAt
+NR-P285,baseline,baseline,5.0,5.0,5.0,2026-10-19T13:49:56.153205
+NR-P285,raga1,raga1,5.0,5.0,5.0,2026-10-19T13:53:56.427119
+NR-P285,rest1,rest1,5.0,5.0,5.0,2026-10-19T13:55:56.635643
+NR-P285,raga2,raga2,5.0,5.0,5.0,2026-10-19T13:59:58.069822
+NR-P285,rest2,rest2,5.0,5.0,5.0,2026-10-19T14:01:56.758852
+NR-P285,raga3,raga3,5.0,5.0,5.0,2026-10-19T14:06:15.183300

@@ -1,0 +1,1075 @@
+{
+  "participant_recording_folder": "NR-P708_20261022_134455",
+  "participant_id": "NR-P708",
+  "output_folder": "signal_processing_final_20261022_173241_326522",
+  "created_at": "2026-10-22 17:34:57",
+  "input_selection": "Original session-root CSVs with four *_raw channels and no *_filtered columns. Prior processing subfolders and filtered exports are excluded.",
+  "filter": {
+    "type": "4th-order Butterworth high-pass and low-pass magnitude responses combined as a 0.5\u201340 Hz bandpass",
+    "implementation": "Zero-phase FFT-domain application of the Butterworth magnitude response with 3-second reflection padding; each timestamp-contiguous valid span is filtered independently.",
+    "order_per_corner": 4,
+    "low_cutoff_hz": 0.5,
+    "high_cutoff_hz": 40.0,
+    "notch_50_hz": false,
+    "dc_offset_and_linear_detrend": "Removed per channel and per contiguous finite span before filtering, matching the existing signal-processing pipeline.",
+    "sample_rate_hz": "Verified independently from each file's timestamp median interval; expected about 250 Hz.",
+    "edge_handling": "First/last 1 second of each filtered span flagged; spans shorter than 5 seconds are left unfiltered and their filtered values remain blank.",
+    "response_validation": {
+      "method": "Synthetic sine inputs, measured interior amplitude ratio versus analytic Butterworth response",
+      "tolerance_absolute_gain": 0.03,
+      "max_absolute_error": 1e-05,
+      "passed": true,
+      "points": [
+        {
+          "frequency_hz": 0.1,
+          "expected_gain": 0.0016,
+          "measured_gain": 0.0016,
+          "absolute_error": 0.0
+        },
+        {
+          "frequency_hz": 0.25,
+          "expected_gain": 0.06238,
+          "measured_gain": 0.06239,
+          "absolute_error": 1e-05
+        },
+        {
+          "frequency_hz": 0.5,
+          "expected_gain": 0.70711,
+          "measured_gain": 0.7071,
+          "absolute_error": 0.0
+        },
+        {
+          "frequency_hz": 1.0,
+          "expected_gain": 0.99805,
+          "measured_gain": 0.99806,
+          "absolute_error": 1e-05
+        },
+        {
+          "frequency_hz": 10.0,
+          "expected_gain": 0.99999,
+          "measured_gain": 1.0,
+          "absolute_error": 1e-05
+        },
+        {
+          "frequency_hz": 30.0,
+          "expected_gain": 0.95341,
+          "measured_gain": 0.95342,
+          "absolute_error": 1e-05
+        },
+        {
+          "frequency_hz": 40.0,
+          "expected_gain": 0.70711,
+          "measured_gain": 0.70711,
+          "absolute_error": 0.0
+        },
+        {
+          "frequency_hz": 50.0,
+          "expected_gain": 0.37904,
+          "measured_gain": 0.37904,
+          "absolute_error": 0.0
+        },
+        {
+          "frequency_hz": 60.0,
+          "expected_gain": 0.19379,
+          "measured_gain": 0.19379,
+          "absolute_error": 0.0
+        },
+        {
+          "frequency_hz": 100.0,
+          "expected_gain": 0.02559,
+          "measured_gain": 0.02559,
+          "absolute_error": 0.0
+        }
+      ]
+    }
+  },
+  "column_handling": {
+    "preserve_timestamp": true,
+    "preserve_original_channel_values": true,
+    "rename_only_in_export": {
+      "Segment": "Recording_Condition"
+    },
+    "condition_values_unchanged": true,
+    "retain_artifact_samples": true,
+    "filtered_channels": [
+      "O1",
+      "O2",
+      "T3",
+      "T4"
+    ]
+  },
+  "acceptance": "Technical file checks do not certify EEG as artifact-free or music-related. Physical units remain unconfirmed. Review flagged intervals, especially T4, before scientific interpretation or segmentation.",
+  "files": [
+    {
+      "source_file": "NeuroRaaga_NR-P708_master.csv",
+      "final_filtered_file": "NeuroRaaga_NR-P708_master_final_filtered.csv",
+      "rows": 202775,
+      "channel_names": [
+        "O1",
+        "O2",
+        "T3",
+        "T4"
+      ],
+      "sample_rate_hz": 250.0032,
+      "quality_flagged_samples_by_channel": {
+        "O1": 7081,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "quality_flagged_percent_by_channel": {
+        "O1": 3.49,
+        "O2": 0.25,
+        "T3": 0.25,
+        "T4": 0.25
+      },
+      "filter_edge_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "validation": {
+        "row_count_preserved": true,
+        "timestamps_preserved_exactly": true,
+        "original_raw_channel_values_preserved_exactly": true,
+        "recording_condition_renamed_and_values_preserved": true,
+        "timestamp_rate_hz": 250.0032,
+        "filtered_finite_sample_counts": {
+          "O1": 202775,
+          "O2": 202775,
+          "T3": 202775,
+          "T4": 202775
+        },
+        "filtering_source_is_original_raw_csv": true,
+        "filter_applied_once_to_original_source": true,
+        "passed": true
+      },
+      "quality_concern": "TECHNICAL VALIDATION PASSED; artifact/edge flags remain and require review.",
+      "sampling": {
+        "rows": 202775,
+        "invalid_timestamps": 0,
+        "nonmonotonic_steps": 0,
+        "gaps_over_6ms": 0,
+        "sampling_rate_hz": 250.0032,
+        "target_rate_hz": 250.0,
+        "duration_sec": 811.096,
+        "rate_matches_250hz": true
+      },
+      "longest_flagged_intervals_by_channel": {
+        "O1": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 23.976,
+            "duration_sec": 23.98,
+            "reasons": [
+              "filter_edge",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 24.26,
+            "end_sec": 25.38,
+            "duration_sec": 1.124,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 810.1,
+            "end_sec": 811.096,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 25.784,
+            "end_sec": 26.724,
+            "duration_sec": 0.944,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 27.428,
+            "end_sec": 28.128,
+            "duration_sec": 0.704,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 52.664,
+            "end_sec": 53.232,
+            "duration_sec": 0.572,
+            "reasons": [
+              "sudden_jump"
+            ]
+          }
+        ],
+        "O2": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 810.1,
+            "end_sec": 811.096,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T3": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 810.1,
+            "end_sec": 811.096,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T4": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 810.1,
+            "end_sec": 811.096,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "source_file": "NeuroRaaga_NR-P708_segment_baseline.csv",
+      "final_filtered_file": "NeuroRaaga_NR-P708_segment_baseline_final_filtered.csv",
+      "rows": 7500,
+      "channel_names": [
+        "O1",
+        "O2",
+        "T3",
+        "T4"
+      ],
+      "sample_rate_hz": 250.0032,
+      "quality_flagged_samples_by_channel": {
+        "O1": 7500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "quality_flagged_percent_by_channel": {
+        "O1": 100.0,
+        "O2": 6.67,
+        "T3": 6.67,
+        "T4": 6.67
+      },
+      "filter_edge_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "validation": {
+        "row_count_preserved": true,
+        "timestamps_preserved_exactly": true,
+        "original_raw_channel_values_preserved_exactly": true,
+        "recording_condition_renamed_and_values_preserved": true,
+        "timestamp_rate_hz": 250.0032,
+        "filtered_finite_sample_counts": {
+          "O1": 7500,
+          "O2": 7500,
+          "T3": 7500,
+          "T4": 7500
+        },
+        "filtering_source_is_original_raw_csv": true,
+        "filter_applied_once_to_original_source": true,
+        "passed": true
+      },
+      "quality_concern": "TECHNICAL VALIDATION PASSED; artifact/edge flags remain and require review.",
+      "sampling": {
+        "rows": 7500,
+        "invalid_timestamps": 0,
+        "nonmonotonic_steps": 0,
+        "gaps_over_6ms": 0,
+        "sampling_rate_hz": 250.0032,
+        "target_rate_hz": 250.0,
+        "duration_sec": 29.996,
+        "rate_matches_250hz": true
+      },
+      "longest_flagged_intervals_by_channel": {
+        "O1": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 29.996,
+            "duration_sec": 30.0,
+            "reasons": [
+              "filter_edge",
+              "sudden_jump"
+            ]
+          }
+        ],
+        "O2": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 29.0,
+            "end_sec": 29.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T3": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 29.0,
+            "end_sec": 29.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T4": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 29.0,
+            "end_sec": 29.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "source_file": "NeuroRaaga_NR-P708_segment_raga1.csv",
+      "final_filtered_file": "NeuroRaaga_NR-P708_segment_raga1_final_filtered.csv",
+      "rows": 60100,
+      "channel_names": [
+        "O1",
+        "O2",
+        "T3",
+        "T4"
+      ],
+      "sample_rate_hz": 250.0032,
+      "quality_flagged_samples_by_channel": {
+        "O1": 8842,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "quality_flagged_percent_by_channel": {
+        "O1": 14.71,
+        "O2": 0.83,
+        "T3": 0.83,
+        "T4": 0.83
+      },
+      "filter_edge_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "validation": {
+        "row_count_preserved": true,
+        "timestamps_preserved_exactly": true,
+        "original_raw_channel_values_preserved_exactly": true,
+        "recording_condition_renamed_and_values_preserved": true,
+        "timestamp_rate_hz": 250.0032,
+        "filtered_finite_sample_counts": {
+          "O1": 60100,
+          "O2": 60100,
+          "T3": 60100,
+          "T4": 60100
+        },
+        "filtering_source_is_original_raw_csv": true,
+        "filter_applied_once_to_original_source": true,
+        "passed": true
+      },
+      "quality_concern": "TECHNICAL VALIDATION PASSED; artifact/edge flags remain and require review.",
+      "sampling": {
+        "rows": 60100,
+        "invalid_timestamps": 0,
+        "nonmonotonic_steps": 0,
+        "gaps_over_6ms": 0,
+        "sampling_rate_hz": 250.0032,
+        "target_rate_hz": 250.0,
+        "duration_sec": 240.396,
+        "rate_matches_250hz": true
+      },
+      "longest_flagged_intervals_by_channel": {
+        "O1": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 29.628,
+            "duration_sec": 29.632,
+            "reasons": [
+              "filter_edge",
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 29.672,
+            "end_sec": 31.152,
+            "duration_sec": 1.484,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 31.376,
+            "end_sec": 32.676,
+            "duration_sec": 1.304,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 33.08,
+            "end_sec": 34.14,
+            "duration_sec": 1.064,
+            "reasons": [
+              "sudden_jump"
+            ]
+          },
+          {
+            "start_sec": 239.4,
+            "end_sec": 240.396,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 34.904,
+            "end_sec": 35.784,
+            "duration_sec": 0.884,
+            "reasons": [
+              "sudden_jump"
+            ]
+          }
+        ],
+        "O2": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.4,
+            "end_sec": 240.396,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T3": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.4,
+            "end_sec": 240.396,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T4": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.4,
+            "end_sec": 240.396,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "source_file": "NeuroRaaga_NR-P708_segment_raga2.csv",
+      "final_filtered_file": "NeuroRaaga_NR-P708_segment_raga2_final_filtered.csv",
+      "rows": 59925,
+      "channel_names": [
+        "O1",
+        "O2",
+        "T3",
+        "T4"
+      ],
+      "sample_rate_hz": 250.0032,
+      "quality_flagged_samples_by_channel": {
+        "O1": 59925,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "quality_flagged_percent_by_channel": {
+        "O1": 100.0,
+        "O2": 0.83,
+        "T3": 0.83,
+        "T4": 0.83
+      },
+      "filter_edge_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "validation": {
+        "row_count_preserved": true,
+        "timestamps_preserved_exactly": true,
+        "original_raw_channel_values_preserved_exactly": true,
+        "recording_condition_renamed_and_values_preserved": true,
+        "timestamp_rate_hz": 250.0032,
+        "filtered_finite_sample_counts": {
+          "O1": 59925,
+          "O2": 59925,
+          "T3": 59925,
+          "T4": 59925
+        },
+        "filtering_source_is_original_raw_csv": true,
+        "filter_applied_once_to_original_source": true,
+        "passed": true
+      },
+      "quality_concern": "TECHNICAL VALIDATION PASSED; artifact/edge flags remain and require review.",
+      "sampling": {
+        "rows": 59925,
+        "invalid_timestamps": 0,
+        "nonmonotonic_steps": 0,
+        "gaps_over_6ms": 0,
+        "sampling_rate_hz": 250.0032,
+        "target_rate_hz": 250.0,
+        "duration_sec": 239.696,
+        "rate_matches_250hz": true
+      },
+      "longest_flagged_intervals_by_channel": {
+        "O1": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 239.696,
+            "duration_sec": 239.697,
+            "reasons": [
+              "filter_edge",
+              "sudden_jump"
+            ]
+          }
+        ],
+        "O2": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 238.7,
+            "end_sec": 239.696,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T3": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 238.7,
+            "end_sec": 239.696,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T4": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 238.7,
+            "end_sec": 239.696,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "source_file": "NeuroRaaga_NR-P708_segment_raga3.csv",
+      "final_filtered_file": "NeuroRaaga_NR-P708_segment_raga3_final_filtered.csv",
+      "rows": 60075,
+      "channel_names": [
+        "O1",
+        "O2",
+        "T3",
+        "T4"
+      ],
+      "sample_rate_hz": 250.0032,
+      "quality_flagged_samples_by_channel": {
+        "O1": 60075,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "quality_flagged_percent_by_channel": {
+        "O1": 100.0,
+        "O2": 0.83,
+        "T3": 0.83,
+        "T4": 0.83
+      },
+      "filter_edge_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "validation": {
+        "row_count_preserved": true,
+        "timestamps_preserved_exactly": true,
+        "original_raw_channel_values_preserved_exactly": true,
+        "recording_condition_renamed_and_values_preserved": true,
+        "timestamp_rate_hz": 250.0032,
+        "filtered_finite_sample_counts": {
+          "O1": 60075,
+          "O2": 60075,
+          "T3": 60075,
+          "T4": 60075
+        },
+        "filtering_source_is_original_raw_csv": true,
+        "filter_applied_once_to_original_source": true,
+        "passed": true
+      },
+      "quality_concern": "TECHNICAL VALIDATION PASSED; artifact/edge flags remain and require review.",
+      "sampling": {
+        "rows": 60075,
+        "invalid_timestamps": 0,
+        "nonmonotonic_steps": 0,
+        "gaps_over_6ms": 0,
+        "sampling_rate_hz": 250.0032,
+        "target_rate_hz": 250.0,
+        "duration_sec": 240.296,
+        "rate_matches_250hz": true
+      },
+      "longest_flagged_intervals_by_channel": {
+        "O1": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 240.296,
+            "duration_sec": 240.297,
+            "reasons": [
+              "filter_edge",
+              "sudden_jump"
+            ]
+          }
+        ],
+        "O2": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.3,
+            "end_sec": 240.296,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T3": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.3,
+            "end_sec": 240.296,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T4": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 239.3,
+            "end_sec": 240.296,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "source_file": "NeuroRaaga_NR-P708_segment_rest1.csv",
+      "final_filtered_file": "NeuroRaaga_NR-P708_segment_rest1_final_filtered.csv",
+      "rows": 7525,
+      "channel_names": [
+        "O1",
+        "O2",
+        "T3",
+        "T4"
+      ],
+      "sample_rate_hz": 250.0032,
+      "quality_flagged_samples_by_channel": {
+        "O1": 7525,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "quality_flagged_percent_by_channel": {
+        "O1": 100.0,
+        "O2": 6.64,
+        "T3": 6.64,
+        "T4": 6.64
+      },
+      "filter_edge_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "validation": {
+        "row_count_preserved": true,
+        "timestamps_preserved_exactly": true,
+        "original_raw_channel_values_preserved_exactly": true,
+        "recording_condition_renamed_and_values_preserved": true,
+        "timestamp_rate_hz": 250.0032,
+        "filtered_finite_sample_counts": {
+          "O1": 7525,
+          "O2": 7525,
+          "T3": 7525,
+          "T4": 7525
+        },
+        "filtering_source_is_original_raw_csv": true,
+        "filter_applied_once_to_original_source": true,
+        "passed": true
+      },
+      "quality_concern": "TECHNICAL VALIDATION PASSED; artifact/edge flags remain and require review.",
+      "sampling": {
+        "rows": 7525,
+        "invalid_timestamps": 0,
+        "nonmonotonic_steps": 0,
+        "gaps_over_6ms": 0,
+        "sampling_rate_hz": 250.0032,
+        "target_rate_hz": 250.0,
+        "duration_sec": 30.096,
+        "rate_matches_250hz": true
+      },
+      "longest_flagged_intervals_by_channel": {
+        "O1": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 30.096,
+            "duration_sec": 30.1,
+            "reasons": [
+              "filter_edge",
+              "sudden_jump"
+            ]
+          }
+        ],
+        "O2": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 29.1,
+            "end_sec": 30.096,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T3": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 29.1,
+            "end_sec": 30.096,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T4": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 29.1,
+            "end_sec": 30.096,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "source_file": "NeuroRaaga_NR-P708_segment_rest2.csv",
+      "final_filtered_file": "NeuroRaaga_NR-P708_segment_rest2_final_filtered.csv",
+      "rows": 7650,
+      "channel_names": [
+        "O1",
+        "O2",
+        "T3",
+        "T4"
+      ],
+      "sample_rate_hz": 250.0032,
+      "quality_flagged_samples_by_channel": {
+        "O1": 7650,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "quality_flagged_percent_by_channel": {
+        "O1": 100.0,
+        "O2": 6.54,
+        "T3": 6.54,
+        "T4": 6.54
+      },
+      "filter_edge_samples_by_channel": {
+        "O1": 500,
+        "O2": 500,
+        "T3": 500,
+        "T4": 500
+      },
+      "validation": {
+        "row_count_preserved": true,
+        "timestamps_preserved_exactly": true,
+        "original_raw_channel_values_preserved_exactly": true,
+        "recording_condition_renamed_and_values_preserved": true,
+        "timestamp_rate_hz": 250.0032,
+        "filtered_finite_sample_counts": {
+          "O1": 7650,
+          "O2": 7650,
+          "T3": 7650,
+          "T4": 7650
+        },
+        "filtering_source_is_original_raw_csv": true,
+        "filter_applied_once_to_original_source": true,
+        "passed": true
+      },
+      "quality_concern": "TECHNICAL VALIDATION PASSED; artifact/edge flags remain and require review.",
+      "sampling": {
+        "rows": 7650,
+        "invalid_timestamps": 0,
+        "nonmonotonic_steps": 0,
+        "gaps_over_6ms": 0,
+        "sampling_rate_hz": 250.0032,
+        "target_rate_hz": 250.0,
+        "duration_sec": 30.596,
+        "rate_matches_250hz": true
+      },
+      "longest_flagged_intervals_by_channel": {
+        "O1": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 30.596,
+            "duration_sec": 30.6,
+            "reasons": [
+              "filter_edge",
+              "sudden_jump"
+            ]
+          }
+        ],
+        "O2": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 29.6,
+            "end_sec": 30.596,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T3": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 29.6,
+            "end_sec": 30.596,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ],
+        "T4": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 0.996,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          },
+          {
+            "start_sec": 29.6,
+            "end_sec": 30.596,
+            "duration_sec": 1.0,
+            "reasons": [
+              "filter_edge"
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    }
+  ],
+  "skipped_files": [],
+  "technical_validation_passed_files": 7,
+  "files_with_unresolved_quality_flags": 7,
+  "signal_units": {
+    "status": "UNCONFIRMED_PHYSICAL_UNIT",
+    "stored_values": "Native Capsule SDK raw-value units; no volts or microvolts conversion is documented or applied."
+  },
+  "quality_flag_rules": {
+    "near_full_scale_candidate": "Absolute sample >=0.399 native units, provisionally flagged because it is numerically near the supplied +/-0.4 device range; physical unit is unconfirmed.",
+    "large_amplitude": "More than 8 robust MAD standard deviations from the channel median.",
+    "sudden_jump": "One-sample change more than 10 robust MAD standard deviations of first differences.",
+    "flatline_over_1s": "Consecutive identical values for at least one second.",
+    "timestamp_gap_or_order": "Nonpositive step or step exceeding 1.5/250 seconds.",
+    "filter_edge": "First/last 1 second of filtered span.",
+    "unfiltered_or_invalid": "No filtered value for invalid or shorter-than-5-second spans."
+  }
+}

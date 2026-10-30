@@ -1,0 +1,251 @@
+{
+  "study_name": "NeuroRaaga Carnatic Ragas EEG Study",
+  "participant": {
+    "participant_id": "NR-P943",
+    "name": "omprith",
+    "age": 22,
+    "sex": "Female",
+    "sleep_quality_previous_night": "Good (7-8 hrs, normal)",
+    "caffeine_intake_test_day": "None",
+    "enrollment_timestamp": "2026-10-19 16:06:56"
+  },
+  "device": {
+    "serial_id": "820712",
+    "name": "Headband",
+    "type": "0",
+    "sampling_frequency_hz": 250.0,
+    "electrode_montage": [
+      "O1",
+      "O2",
+      "T3",
+      "T4"
+    ],
+    "reference": "Frontal reference electrodes",
+    "resistance_values": "Capsule SDK ohms converted to kOhm; stored impedance is capped at 1000 kOhm for status checks, while the UI shows finite SDK readings and OPEN for infinity.",
+    "csv_signal_values": "Unfiltered SDK raw values in native units; display filtering is not applied to CSV.",
+    "display_filter": "0.5-40 Hz bandpass with 50 Hz notch"
+  },
+  "calibration_quality": {
+    "timestamp": 1792406211.578066,
+    "duration_sec": 3.5,
+    "overall_status": "GOOD",
+    "ready_for_protocol": true,
+    "sample_rate_hz": 250.0,
+    "channels": {
+      "O1": {
+        "impedance_kohm": 163.7,
+        "measured_impedance_kohm": 163.7,
+        "open_circuit": false,
+        "rms_uV": 11.65,
+        "std_uV": 11.65,
+        "ptp_uV": 105.93,
+        "signal_quality": "GOOD",
+        "status": "GREEN",
+        "passed": true
+      },
+      "O2": {
+        "impedance_kohm": 450.6,
+        "measured_impedance_kohm": 450.6,
+        "open_circuit": false,
+        "rms_uV": 19.43,
+        "std_uV": 19.43,
+        "ptp_uV": 167.41,
+        "signal_quality": "GOOD",
+        "status": "GREEN",
+        "passed": true
+      },
+      "T3": {
+        "impedance_kohm": 55.8,
+        "measured_impedance_kohm": 55.8,
+        "open_circuit": false,
+        "rms_uV": 13.02,
+        "std_uV": 13.01,
+        "ptp_uV": 120.58,
+        "signal_quality": "GOOD",
+        "status": "GREEN",
+        "passed": true
+      },
+      "T4": {
+        "impedance_kohm": 29.3,
+        "measured_impedance_kohm": 29.3,
+        "open_circuit": false,
+        "rms_uV": 12.53,
+        "std_uV": 12.53,
+        "ptp_uV": 99.03,
+        "signal_quality": "GOOD",
+        "status": "GREEN",
+        "passed": true
+      }
+    },
+    "message": "All electrode impedances are below 500 kOhm and signal quality is acceptable. Ready for baseline recording.",
+    "resistance_callback_count": 1004
+  },
+  "protocol": {
+    "total_duration_sec": 811.03,
+    "total_samples_collected": 202700,
+    "expected_sample_rate": 250.0,
+    "actual_sample_rate": 249.93,
+    "segments": {
+      "baseline": {
+        "segment": "baseline",
+        "slice_filename": "NeuroRaaga_NR-P943_segment_baseline.csv",
+        "start_time_iso": "2026-10-19T16:06:56.425404",
+        "start_timestamp_epoch": 1792406216.4174962,
+        "audio_track": null,
+        "sample_count": 7525,
+        "end_time_iso": "2026-10-19T16:07:26.492538",
+        "end_timestamp_epoch": 1792406246.4925292,
+        "duration_sec": 30.08
+      },
+      "raga1": {
+        "segment": "raga1",
+        "slice_filename": "NeuroRaaga_NR-P943_segment_raga1.csv",
+        "start_time_iso": "2026-10-19T16:07:26.494318",
+        "start_timestamp_epoch": 1792406246.4928105,
+        "audio_track": {
+          "slot_id": "raga1",
+          "label": "Raga 1",
+          "default_title": "Anandabhairavi",
+          "current_title": "Anandabhairavi",
+          "filename": "anandabhairavi.wav",
+          "filepath": "C:\\Users\\msubi\\Downloads\\Neuroraga\\app\\audio\\anandabhairavi.wav",
+          "url": "/api/audio/file/anandabhairavi.wav",
+          "duration_sec": 125.0,
+          "is_custom": false,
+          "mood_description": "Calming, devotional, soothing vakra phrases (Natabhairavi janya)"
+        },
+        "sample_count": 60025,
+        "end_time_iso": "2026-10-19T16:11:26.643259",
+        "end_timestamp_epoch": 1792406486.643245,
+        "duration_sec": 240.15
+      },
+      "rest1": {
+        "segment": "rest1",
+        "slice_filename": "NeuroRaaga_NR-P943_segment_rest1.csv",
+        "start_time_iso": "2026-10-19T16:11:26.646538",
+        "start_timestamp_epoch": 1792406486.6445596,
+        "audio_track": null,
+        "sample_count": 7500,
+        "end_time_iso": "2026-10-19T16:11:56.702655",
+        "end_timestamp_epoch": 1792406516.7026508,
+        "duration_sec": 30.06
+      },
+      "raga2": {
+        "segment": "raga2",
+        "slice_filename": "NeuroRaaga_NR-P943_segment_raga2.csv",
+        "start_time_iso": "2026-10-19T16:11:56.704586",
+        "start_timestamp_epoch": 1792406516.7032585,
+        "audio_track": {
+          "slot_id": "raga2",
+          "label": "Raga 2",
+          "default_title": "Shubhapantuvarali",
+          "current_title": "Shubhapantuvarali",
+          "filename": "shubhapantuvarali.wav",
+          "filepath": "C:\\Users\\msubi\\Downloads\\Neuroraga\\app\\audio\\shubhapantuvarali.wav",
+          "url": "/api/audio/file/shubhapantuvarali.wav",
+          "duration_sec": 125.0,
+          "is_custom": false,
+          "mood_description": "Contemplative, profound pathos, introspective (45th Melakarta)"
+        },
+        "sample_count": 60000,
+        "end_time_iso": "2026-10-19T16:15:56.736906",
+        "end_timestamp_epoch": 1792406756.736902,
+        "duration_sec": 240.03
+      },
+      "rest2": {
+        "segment": "rest2",
+        "slice_filename": "NeuroRaaga_NR-P943_segment_rest2.csv",
+        "start_time_iso": "2026-10-19T16:15:56.739014",
+        "start_timestamp_epoch": 1792406756.737941,
+        "audio_track": null,
+        "sample_count": 7550,
+        "end_time_iso": "2026-10-19T16:16:26.951093",
+        "end_timestamp_epoch": 1792406786.9510856,
+        "duration_sec": 30.21
+      },
+      "raga3": {
+        "segment": "raga3",
+        "slice_filename": "NeuroRaaga_NR-P943_segment_raga3.csv",
+        "start_time_iso": "2026-10-19T16:16:26.953927",
+        "start_timestamp_epoch": 1792406786.952926,
+        "audio_track": {
+          "slot_id": "raga3",
+          "label": "Raga 3",
+          "default_title": "Mohanam",
+          "current_title": "Mohanam",
+          "filename": "mohanam.wav",
+          "filepath": "C:\\Users\\msubi\\Downloads\\Neuroraga\\app\\audio\\mohanam.wav",
+          "url": "/api/audio/file/mohanam.wav",
+          "duration_sec": 125.0,
+          "is_custom": false,
+          "mood_description": "Joyous, uplifting, bright pentatonic melody (Harikambhoji/Kalyani janya)"
+        },
+        "sample_count": 60100,
+        "end_time_iso": "2026-10-19T16:20:27.449840",
+        "end_timestamp_epoch": 1792407027.449836,
+        "duration_sec": 240.5
+      }
+    }
+  },
+  "subjective_ratings": {
+    "baseline": {
+      "condition": "baseline",
+      "segment": "baseline",
+      "attention": 5.0,
+      "relaxation": 5.0,
+      "stress": 5.0,
+      "notes": "",
+      "submitted_at": "2026-10-19T16:07:29.119277"
+    },
+    "raga1": {
+      "condition": "raga1",
+      "segment": "raga1",
+      "attention": 5.0,
+      "relaxation": 5.0,
+      "stress": 5.0,
+      "notes": "",
+      "submitted_at": "2026-10-19T16:11:28.660550"
+    },
+    "rest1": {
+      "condition": "rest1",
+      "segment": "rest1",
+      "attention": 5.0,
+      "relaxation": 5.0,
+      "stress": 5.0,
+      "notes": "",
+      "submitted_at": "2026-10-19T16:11:58.555974"
+    },
+    "raga2": {
+      "condition": "raga2",
+      "segment": "raga2",
+      "attention": 5.0,
+      "relaxation": 5.0,
+      "stress": 5.0,
+      "notes": "",
+      "submitted_at": "2026-10-19T16:15:59.144833"
+    },
+    "rest2": {
+      "condition": "rest2",
+      "segment": "rest2",
+      "attention": 5.0,
+      "relaxation": 5.0,
+      "stress": 5.0,
+      "notes": "",
+      "submitted_at": "2026-10-19T16:16:29.287913"
+    }
+  },
+  "files": {
+    "session_folder": "C:\\Users\\msubi\\Downloads\\Neuroraga\\app\\data\\recordings\\NR-P943_20261019_160656",
+    "master_csv": "NeuroRaaga_NR-P943_master.csv",
+    "segment_slices": [
+      "NeuroRaaga_NR-P943_segment_baseline.csv",
+      "NeuroRaaga_NR-P943_segment_raga1.csv",
+      "NeuroRaaga_NR-P943_segment_rest1.csv",
+      "NeuroRaaga_NR-P943_segment_raga2.csv",
+      "NeuroRaaga_NR-P943_segment_rest2.csv",
+      "NeuroRaaga_NR-P943_segment_raga3.csv"
+    ],
+    "ratings_csv": "NeuroRaaga_NR-P943_subjective_ratings.csv",
+    "metadata_json": "NeuroRaaga_NR-P943_metadata.json"
+  }
+}
